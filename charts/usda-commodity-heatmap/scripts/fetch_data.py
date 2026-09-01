@@ -266,17 +266,16 @@ def aggregate(records: list[dict[str, Any]]) -> dict[str, Any]:
                 "dec": round(month_totals[12] / n / 1_000_000, 2),
             }
 
-    # Keep the top 75 commodities by Q4 total volume — covers everything above
-    # ~50M lbs Q4, including Pineapples, Eggplant, Garlic, Artichokes, Plantains,
-    # Pomegranates, Apricots, Cranberries, Dates, Olives, Kale, plus niche
-    # peppers and squashes. Past rank ~75 the tail is mostly <15M lbs items
-    # that ship from a single region and barely move the map.
+    # Keep the top 100 commodities by Q4 total volume. This covers essentially
+    # every commodity with meaningful multi-region movement; the tail past ~100
+    # is mostly sub-15M-lb items shipping from a single region that barely move
+    # the map.
     commodity_totals = [
         (c, sum(months["oct"] + months["nov"] + months["dec"] for months in regions.values()))
         for c, regions in production.items()
     ]
     commodity_totals.sort(key=lambda x: x[1], reverse=True)
-    top_commodities = [c for c, _ in commodity_totals[:75]]
+    top_commodities = [c for c, _ in commodity_totals[:100]]
     production = {c: production[c] for c in top_commodities}
 
     # "All Commodities" rollup

@@ -50,7 +50,7 @@ python scripts/build_dashboard.py # renders docs/index.html
 
 - **Change region → state mapping:** edit `STATE_TO_REGION` near the top of the `<script>` in `templates/template.html.j2`.
 - **Restyle:** all colors are CSS variables at the top of the template (`--heat-0` … `--heat-7`).
-- **Top-N commodities:** the script keeps the top 75 by volume; change the `[:75]` slice in `fetch_data.py`.
+- **Top-N commodities:** the script keeps the top 100 by volume; change the `[:100]` slice in `fetch_data.py`.
 - **Different time window:** change `N_YEARS` or `Q4_MONTHS` in `fetch_data.py`.
 
 ---
