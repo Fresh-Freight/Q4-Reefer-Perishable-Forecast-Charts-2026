@@ -1,0 +1,2268 @@
+{
+  "metadata": {
+    "source": "USDA AMS Specialty Crops Movement Reports (Socrata: agtransport.usda.gov/resource/rfpn-7etz)",
+    "years": [
+      "2022",
+      "2023",
+      "2024",
+      "2025"
+    ],
+    "n_years_avg": 4,
+    "metric": "Refrigerated truck volume, Q4 (Oct-Dec) average, in millions of pounds",
+    "fetched_at": "2026-09-01T18:29:48.025081"
+  },
+  "production": {
+    "All Commodities": {
+      "Great Lakes": {
+        "oct": 185.04,
+        "nov": 182.61,
+        "dec": 150.33
+      },
+      "Colorado": {
+        "oct": 144.13,
+        "nov": 154.21,
+        "dec": 145.52
+      },
+      "PNW": {
+        "oct": 1067.85,
+        "nov": 1090.01,
+        "dec": 1013.37
+      },
+      "Mid-Atlantic": {
+        "oct": 34.34,
+        "nov": 19.17,
+        "dec": 19.48
+      },
+      "Texas": {
+        "oct": 48.73,
+        "nov": 63.96,
+        "dec": 74.93
+      },
+      "California": {
+        "oct": 1844.71,
+        "nov": 1223.73,
+        "dec": 867.8
+      },
+      "New York": {
+        "oct": 90.74,
+        "nov": 82.24,
+        "dec": 62.54
+      },
+      "Southeast": {
+        "oct": 107.46,
+        "nov": 111.48,
+        "dec": 64.46
+      },
+      "Mexico-Arizona": {
+        "oct": 265.85,
+        "nov": 412.6,
+        "dec": 483.51
+      },
+      "Mexico-California": {
+        "oct": 271.15,
+        "nov": 259.47,
+        "dec": 306.09
+      },
+      "Mexico-Texas": {
+        "oct": 1026.75,
+        "nov": 1045.78,
+        "dec": 1116.46
+      },
+      "Mexico-New Mexico": {
+        "oct": 67.43,
+        "nov": 57.38,
+        "dec": 54.57
+      },
+      "Florida": {
+        "oct": 43.8,
+        "nov": 166.13,
+        "dec": 292.37
+      },
+      "Arizona": {
+        "oct": 61.8,
+        "nov": 299.54,
+        "dec": 430.56
+      }
+    },
+    "Potatoes": {
+      "Great Lakes": {
+        "oct": 114.92,
+        "nov": 134.16,
+        "dec": 109.67
+      },
+      "Colorado": {
+        "oct": 123.69,
+        "nov": 131.05,
+        "dec": 125.72
+      },
+      "PNW": {
+        "oct": 333.13,
+        "nov": 345.47,
+        "dec": 314.52
+      },
+      "Mid-Atlantic": {
+        "oct": 0.09,
+        "nov": 0.0,
+        "dec": 0.0
+      },
+      "Texas": {
+        "oct": 25.54,
+        "nov": 32.66,
+        "dec": 27.46
+      },
+      "California": {
+        "oct": 24.05,
+        "nov": 28.46,
+        "dec": 22.79
+      }
+    },
+    "Apples": {
+      "Mid-Atlantic": {
+        "oct": 21.26,
+        "nov": 18.91,
+        "dec": 19.48
+      },
+      "PNW": {
+        "oct": 349.57,
+        "nov": 363.17,
+        "dec": 336.08
+      },
+      "Great Lakes": {
+        "oct": 37.32,
+        "nov": 37.29,
+        "dec": 32.52
+      },
+      "New York": {
+        "oct": 41.14,
+        "nov": 42.25,
+        "dec": 39.75
+      },
+      "California": {
+        "oct": 3.89,
+        "nov": 2.72,
+        "dec": 1.52
+      },
+      "Southeast": {
+        "oct": 2.6,
+        "nov": 1.4,
+        "dec": 1.1
+      },
+      "Mexico-Arizona": {
+        "oct": 0.0,
+        "nov": 0.01,
+        "dec": 0.0
+      },
+      "Mexico-California": {
+        "oct": 0.01,
+        "nov": 0.0,
+        "dec": 0.0
+      }
+    },
+    "Onions, Dry": {
+      "California": {
+        "oct": 7.42,
+        "nov": 6.87,
+        "dec": 6.33
+      },
+      "Colorado": {
+        "oct": 20.44,
+        "nov": 23.16,
+        "dec": 19.8
+      },
+      "PNW": {
+        "oct": 296.17,
+        "nov": 283.42,
+        "dec": 276.22
+      },
+      "Great Lakes": {
+        "oct": 8.08,
+        "nov": 9.42,
+        "dec": 8.12
+      },
+      "New York": {
+        "oct": 15.23,
+        "nov": 18.81,
+        "dec": 14.52
+      },
+      "Mexico-Texas": {
+        "oct": 2.57,
+        "nov": 2.36,
+        "dec": 4.38
+      },
+      "Mexico-Arizona": {
+        "oct": 0.32,
+        "nov": 0.28,
+        "dec": 0.81
+      },
+      "Mexico-California": {
+        "oct": 0.4,
+        "nov": 0.03,
+        "dec": 0.21
+      },
+      "Mexico-New Mexico": {
+        "oct": 0.0,
+        "nov": 0.03,
+        "dec": 0.03
+      },
+      "Southeast": {
+        "oct": 6.01,
+        "nov": 0.43,
+        "dec": 0.0
+      }
+    },
+    "Avocados": {
+      "California": {
+        "oct": 4.06,
+        "nov": 0.78,
+        "dec": 0.0
+      },
+      "Florida": {
+        "oct": 3.74,
+        "nov": 2.35,
+        "dec": 1.95
+      },
+      "Mexico-Texas": {
+        "oct": 222.44,
+        "nov": 212.13,
+        "dec": 212.83
+      },
+      "Mexico-Arizona": {
+        "oct": 3.29,
+        "nov": 3.07,
+        "dec": 3.35
+      },
+      "Mexico-California": {
+        "oct": 1.6,
+        "nov": 1.55,
+        "dec": 1.49
+      }
+    },
+    "Oranges": {
+      "California": {
+        "oct": 174.3,
+        "nov": 172.46,
+        "dec": 174.3
+      },
+      "Florida": {
+        "oct": 8.48,
+        "nov": 14.82,
+        "dec": 15.85
+      },
+      "Mexico-Texas": {
+        "oct": 3.08,
+        "nov": 3.26,
+        "dec": 3.23
+      },
+      "Texas": {
+        "oct": 5.04,
+        "nov": 10.54,
+        "dec": 13.19
+      },
+      "Mexico-Arizona": {
+        "oct": 0.0,
+        "nov": 2.68,
+        "dec": 10.51
+      }
+    },
+    "Grapes": {
+      "California": {
+        "oct": 302.82,
+        "nov": 209.63,
+        "dec": 79.84
+      },
+      "Mexico-Arizona": {
+        "oct": 0.04,
+        "nov": 0.15,
+        "dec": 0.0
+      }
+    },
+    "Tomatoes, Plum Type": {
+      "California": {
+        "oct": 12.0,
+        "nov": 0.18,
+        "dec": 0.0
+      },
+      "Southeast": {
+        "oct": 0.76,
+        "nov": 0.96,
+        "dec": 0.05
+      },
+      "Mexico-Texas": {
+        "oct": 97.79,
+        "nov": 97.88,
+        "dec": 81.16
+      },
+      "Mexico-Arizona": {
+        "oct": 4.39,
+        "nov": 9.82,
+        "dec": 16.24
+      },
+      "Mexico-California": {
+        "oct": 44.66,
+        "nov": 48.08,
+        "dec": 57.46
+      },
+      "Great Lakes": {
+        "oct": 1.87,
+        "nov": 0.0,
+        "dec": 0.0
+      },
+      "Florida": {
+        "oct": 1.55,
+        "nov": 19.17,
+        "dec": 34.73
+      }
+    },
+    "Tomatoes": {
+      "California": {
+        "oct": 37.53,
+        "nov": 2.07,
+        "dec": 0.0
+      },
+      "Southeast": {
+        "oct": 6.67,
+        "nov": 9.18,
+        "dec": 0.28
+      },
+      "Mid-Atlantic": {
+        "oct": 6.15,
+        "nov": 0.25,
+        "dec": 0.0
+      },
+      "Mexico-Texas": {
+        "oct": 84.57,
+        "nov": 77.7,
+        "dec": 72.69
+      },
+      "Mexico-Arizona": {
+        "oct": 19.64,
+        "nov": 18.86,
+        "dec": 23.35
+      },
+      "Mexico-California": {
+        "oct": 9.61,
+        "nov": 9.74,
+        "dec": 13.35
+      },
+      "Great Lakes": {
+        "oct": 1.11,
+        "nov": 0.0,
+        "dec": 0.0
+      },
+      "Florida": {
+        "oct": 11.49,
+        "nov": 52.71,
+        "dec": 62.06
+      },
+      "Mexico-New Mexico": {
+        "oct": 0.0,
+        "nov": 0.02,
+        "dec": 0.12
+      }
+    },
+    "Cucumbers": {
+      "Florida": {
+        "oct": 5.13,
+        "nov": 11.07,
+        "dec": 11.37
+      },
+      "Mexico-Arizona": {
+        "oct": 49.81,
+        "nov": 90.84,
+        "dec": 115.41
+      },
+      "Southeast": {
+        "oct": 13.46,
+        "nov": 5.12,
+        "dec": 0.26
+      },
+      "Mexico-Texas": {
+        "oct": 45.98,
+        "nov": 46.49,
+        "dec": 50.66
+      },
+      "Mexico-California": {
+        "oct": 35.52,
+        "nov": 17.1,
+        "dec": 8.37
+      },
+      "Great Lakes": {
+        "oct": 0.33,
+        "nov": 0.0,
+        "dec": 0.0
+      },
+      "New York": {
+        "oct": 2.65,
+        "nov": 0.0,
+        "dec": 0.0
+      },
+      "Mexico-New Mexico": {
+        "oct": 0.17,
+        "nov": 0.1,
+        "dec": 0.0
+      }
+    },
+    "Lettuce, Iceberg": {
+      "California": {
+        "oct": 155.73,
+        "nov": 49.38,
+        "dec": 20.01
+      },
+      "Mexico-Texas": {
+        "oct": 9.82,
+        "nov": 20.56,
+        "dec": 18.92
+      },
+      "Mexico-Arizona": {
+        "oct": 2.43,
+        "nov": 2.43,
+        "dec": 3.57
+      },
+      "Mexico-California": {
+        "oct": 0.13,
+        "nov": 0.34,
+        "dec": 1.35
+      },
+      "Arizona": {
+        "oct": 0.4,
+        "nov": 90.04,
+        "dec": 128.15
+      },
+      "Florida": {
+        "oct": 0.0,
+        "nov": 0.03,
+        "dec": 2.38
+      },
+      "Mexico-New Mexico": {
+        "oct": 0.0,
+        "nov": 0.01,
+        "dec": 0.0
+      }
+    },
+    "Lettuce, Romaine": {
+      "California": {
+        "oct": 146.68,
+        "nov": 53.23,
+        "dec": 25.16
+      },
+      "Arizona": {
+        "oct": 1.18,
+        "nov": 91.44,
+        "dec": 126.71
+      },
+      "Florida": {
+        "oct": 0.0,
+        "nov": 0.03,
+        "dec": 2.08
+      },
+      "Mexico-Texas": {
+        "oct": 2.12,
+        "nov": 3.25,
+        "dec": 3.16
+      },
+      "Mexico-California": {
+        "oct": 0.55,
+        "nov": 4.91,
+        "dec": 14.41
+      },
+      "Mexico-Arizona": {
+        "oct": 3.4,
+        "nov": 3.23,
+        "dec": 5.38
+      },
+      "Mexico-New Mexico": {
+        "oct": 0.0,
+        "nov": 0.01,
+        "dec": 0.0
+      }
+    },
+    "Lemons": {
+      "California": {
+        "oct": 124.66,
+        "nov": 125.31,
+        "dec": 127.48
+      },
+      "Mexico-Arizona": {
+        "oct": 5.73,
+        "nov": 5.09,
+        "dec": 2.23
+      },
+      "Mexico-Texas": {
+        "oct": 17.52,
+        "nov": 12.39,
+        "dec": 6.57
+      },
+      "Mexico-California": {
+        "oct": 0.38,
+        "nov": 0.16,
+        "dec": 0.02
+      }
+    },
+    "Watermelons": {
+      "Mid-Atlantic": {
+        "oct": 6.12,
+        "nov": 0.01,
+        "dec": 0.0
+      },
+      "Great Lakes": {
+        "oct": 5.18,
+        "nov": 0.0,
+        "dec": 0.02
+      },
+      "Mexico-Arizona": {
+        "oct": 81.28,
+        "nov": 106.56,
+        "dec": 43.71
+      },
+      "Mexico-Texas": {
+        "oct": 37.93,
+        "nov": 28.04,
+        "dec": 58.01
+      },
+      "Texas": {
+        "oct": 13.2,
+        "nov": 1.29,
+        "dec": 0.36
+      },
+      "California": {
+        "oct": 29.39,
+        "nov": 0.01,
+        "dec": 0.0
+      },
+      "Mexico-California": {
+        "oct": 2.79,
+        "nov": 1.58,
+        "dec": 3.11
+      },
+      "Southeast": {
+        "oct": 4.34,
+        "nov": 0.05,
+        "dec": 0.0
+      },
+      "Mexico-New Mexico": {
+        "oct": 1.07,
+        "nov": 0.03,
+        "dec": 0.0
+      }
+    },
+    "Clementines": {
+      "California": {
+        "oct": 134.29,
+        "nov": 134.29,
+        "dec": 134.29
+      }
+    },
+    "Strawberries": {
+      "California": {
+        "oct": 154.33,
+        "nov": 70.65,
+        "dec": 33.03
+      },
+      "Mexico-California": {
+        "oct": 0.69,
+        "nov": 1.37,
+        "dec": 5.36
+      },
+      "Mexico-Texas": {
+        "oct": 6.9,
+        "nov": 28.89,
+        "dec": 53.29
+      },
+      "Florida": {
+        "oct": 0.0,
+        "nov": 4.22,
+        "dec": 42.38
+      },
+      "Mexico-Arizona": {
+        "oct": 0.0,
+        "nov": 0.02,
+        "dec": 0.01
+      }
+    },
+    "Celery": {
+      "Great Lakes": {
+        "oct": 4.97,
+        "nov": 0.18,
+        "dec": 0.0
+      },
+      "California": {
+        "oct": 116.91,
+        "nov": 131.99,
+        "dec": 94.28
+      },
+      "Mexico-Texas": {
+        "oct": 7.51,
+        "nov": 11.49,
+        "dec": 12.75
+      },
+      "Mexico-Arizona": {
+        "oct": 0.7,
+        "nov": 1.23,
+        "dec": 2.02
+      },
+      "Mexico-California": {
+        "oct": 0.67,
+        "nov": 1.31,
+        "dec": 2.14
+      },
+      "Florida": {
+        "oct": 0.0,
+        "nov": 0.0,
+        "dec": 2.53
+      },
+      "Arizona": {
+        "oct": 0.0,
+        "nov": 0.92,
+        "dec": 5.07
+      }
+    },
+    "Peppers, Bell Type": {
+      "Great Lakes": {
+        "oct": 4.41,
+        "nov": 0.0,
+        "dec": 0.0
+      },
+      "California": {
+        "oct": 36.87,
+        "nov": 26.4,
+        "dec": 10.48
+      },
+      "Southeast": {
+        "oct": 8.8,
+        "nov": 9.21,
+        "dec": 1.36
+      },
+      "Mexico-Texas": {
+        "oct": 45.93,
+        "nov": 47.49,
+        "dec": 61.45
+      },
+      "Mexico-Arizona": {
+        "oct": 11.19,
+        "nov": 17.15,
+        "dec": 60.43
+      },
+      "Mexico-California": {
+        "oct": 2.32,
+        "nov": 5.73,
+        "dec": 8.55
+      },
+      "Florida": {
+        "oct": 0.19,
+        "nov": 9.67,
+        "dec": 22.91
+      }
+    },
+    "Limes": {
+      "Mexico-Texas": {
+        "oct": 115.53,
+        "nov": 100.01,
+        "dec": 102.63
+      },
+      "Mexico-Arizona": {
+        "oct": 0.89,
+        "nov": 0.82,
+        "dec": 1.02
+      },
+      "Mexico-California": {
+        "oct": 15.03,
+        "nov": 13.51,
+        "dec": 13.9
+      },
+      "Mexico-New Mexico": {
+        "oct": 0.08,
+        "nov": 0.03,
+        "dec": 0.06
+      }
+    },
+    "Pears": {
+      "PNW": {
+        "oct": 87.19,
+        "nov": 97.95,
+        "dec": 86.55
+      },
+      "California": {
+        "oct": 8.33,
+        "nov": 3.02,
+        "dec": 0.49
+      }
+    },
+    "Broccoli": {
+      "California": {
+        "oct": 38.23,
+        "nov": 25.65,
+        "dec": 15.38
+      },
+      "Mexico-California": {
+        "oct": 2.08,
+        "nov": 2.77,
+        "dec": 9.21
+      },
+      "Mexico-Texas": {
+        "oct": 35.93,
+        "nov": 50.22,
+        "dec": 50.6
+      },
+      "Mexico-Arizona": {
+        "oct": 0.66,
+        "nov": 0.69,
+        "dec": 6.43
+      },
+      "Southeast": {
+        "oct": 0.66,
+        "nov": 2.46,
+        "dec": 1.97
+      },
+      "Arizona": {
+        "oct": 0.0,
+        "nov": 7.14,
+        "dec": 19.72
+      },
+      "Florida": {
+        "oct": 0.0,
+        "nov": 0.0,
+        "dec": 0.31
+      },
+      "Texas": {
+        "oct": 0.0,
+        "nov": 0.0,
+        "dec": 0.12
+      }
+    },
+    "Cabbage": {
+      "Great Lakes": {
+        "oct": 5.99,
+        "nov": 1.56,
+        "dec": 0.0
+      },
+      "California": {
+        "oct": 11.43,
+        "nov": 7.67,
+        "dec": 9.99
+      },
+      "New York": {
+        "oct": 28.97,
+        "nov": 21.18,
+        "dec": 8.27
+      },
+      "Mexico-Texas": {
+        "oct": 9.2,
+        "nov": 8.31,
+        "dec": 8.06
+      },
+      "Mexico-Arizona": {
+        "oct": 2.01,
+        "nov": 1.66,
+        "dec": 2.41
+      },
+      "Mexico-California": {
+        "oct": 0.14,
+        "nov": 0.34,
+        "dec": 2.26
+      },
+      "Southeast": {
+        "oct": 1.63,
+        "nov": 10.96,
+        "dec": 17.88
+      },
+      "Texas": {
+        "oct": 0.02,
+        "nov": 2.44,
+        "dec": 10.79
+      },
+      "Arizona": {
+        "oct": 0.0,
+        "nov": 7.41,
+        "dec": 12.42
+      },
+      "Florida": {
+        "oct": 0.0,
+        "nov": 0.0,
+        "dec": 11.69
+      }
+    },
+    "Cantaloupes": {
+      "California": {
+        "oct": 72.08,
+        "nov": 6.58,
+        "dec": 0.0
+      },
+      "Arizona": {
+        "oct": 44.96,
+        "nov": 28.28,
+        "dec": 0.2
+      },
+      "Mexico-California": {
+        "oct": 0.05,
+        "nov": 0.07,
+        "dec": 0.05
+      },
+      "Mexico-Arizona": {
+        "oct": 3.47,
+        "nov": 20.17,
+        "dec": 4.69
+      },
+      "Mexico-Texas": {
+        "oct": 0.02,
+        "nov": 0.07,
+        "dec": 0.0
+      }
+    },
+    "Lettuce, Processed": {
+      "California": {
+        "oct": 14.56,
+        "nov": 17.33,
+        "dec": 0.0
+      },
+      "Arizona": {
+        "oct": 4.7,
+        "nov": 45.27,
+        "dec": 85.73
+      }
+    },
+    "Peppers, Other": {
+      "Mexico-Arizona": {
+        "oct": 0.52,
+        "nov": 1.89,
+        "dec": 3.94
+      },
+      "Mexico-New Mexico": {
+        "oct": 36.97,
+        "nov": 30.06,
+        "dec": 24.06
+      },
+      "Mexico-California": {
+        "oct": 4.73,
+        "nov": 4.38,
+        "dec": 5.67
+      },
+      "Mexico-Texas": {
+        "oct": 12.92,
+        "nov": 13.91,
+        "dec": 13.43
+      },
+      "Florida": {
+        "oct": 0.0,
+        "nov": 0.0,
+        "dec": 0.59
+      }
+    },
+    "Cauliflower": {
+      "California": {
+        "oct": 33.7,
+        "nov": 28.11,
+        "dec": 17.06
+      },
+      "Mexico-Texas": {
+        "oct": 6.3,
+        "nov": 5.72,
+        "dec": 7.25
+      },
+      "Mexico-Arizona": {
+        "oct": 0.19,
+        "nov": 0.19,
+        "dec": 0.55
+      },
+      "Mexico-California": {
+        "oct": 1.03,
+        "nov": 1.53,
+        "dec": 2.17
+      },
+      "Arizona": {
+        "oct": 0.0,
+        "nov": 3.7,
+        "dec": 17.8
+      }
+    },
+    "Tomatoes, Grape Type": {
+      "Florida": {
+        "oct": 3.43,
+        "nov": 4.61,
+        "dec": 5.07
+      },
+      "Great Lakes": {
+        "oct": 0.19,
+        "nov": 0.0,
+        "dec": 0.0
+      },
+      "Mid-Atlantic": {
+        "oct": 0.59,
+        "nov": 0.0,
+        "dec": 0.0
+      },
+      "Mexico-Texas": {
+        "oct": 24.81,
+        "nov": 22.94,
+        "dec": 21.55
+      },
+      "Mexico-Arizona": {
+        "oct": 6.4,
+        "nov": 5.86,
+        "dec": 7.84
+      },
+      "Mexico-California": {
+        "oct": 4.21,
+        "nov": 2.84,
+        "dec": 2.37
+      },
+      "Southeast": {
+        "oct": 1.06,
+        "nov": 0.31,
+        "dec": 0.05
+      },
+      "Mexico-New Mexico": {
+        "oct": 0.01,
+        "nov": 0.09,
+        "dec": 0.03
+      }
+    },
+    "Corn, Sweet": {
+      "New York": {
+        "oct": 1.99,
+        "nov": 0.0,
+        "dec": 0.0
+      },
+      "California": {
+        "oct": 11.57,
+        "nov": 7.73,
+        "dec": 1.23
+      },
+      "Southeast": {
+        "oct": 15.63,
+        "nov": 9.49,
+        "dec": 0.0
+      },
+      "Mexico-Texas": {
+        "oct": 2.56,
+        "nov": 1.96,
+        "dec": 2.96
+      },
+      "Great Lakes": {
+        "oct": 0.07,
+        "nov": 0.0,
+        "dec": 0.0
+      },
+      "Mexico-Arizona": {
+        "oct": 0.03,
+        "nov": 0.61,
+        "dec": 13.18
+      },
+      "Mexico-California": {
+        "oct": 1.52,
+        "nov": 1.75,
+        "dec": 5.4
+      },
+      "Arizona": {
+        "oct": -0.0,
+        "nov": 0.0,
+        "dec": 0.0
+      },
+      "Florida": {
+        "oct": 0.0,
+        "nov": 12.06,
+        "dec": 21.65
+      }
+    },
+    "Onions, Green": {
+      "Southeast": {
+        "oct": 1.72,
+        "nov": 2.03,
+        "dec": 2.05
+      },
+      "Mexico-California": {
+        "oct": 27.53,
+        "nov": 29.82,
+        "dec": 30.09
+      },
+      "Mexico-Texas": {
+        "oct": 3.98,
+        "nov": 3.8,
+        "dec": 4.04
+      },
+      "Mexico-Arizona": {
+        "oct": 0.58,
+        "nov": 0.87,
+        "dec": 4.34
+      },
+      "California": {
+        "oct": 0.21,
+        "nov": 0.13,
+        "dec": 0.09
+      },
+      "Mexico-New Mexico": {
+        "oct": 0.04,
+        "nov": 0.02,
+        "dec": 0.0
+      }
+    },
+    "Papaya": {
+      "Mexico-California": {
+        "oct": 13.43,
+        "nov": 10.61,
+        "dec": 10.85
+      },
+      "Mexico-Texas": {
+        "oct": 25.61,
+        "nov": 22.59,
+        "dec": 24.26
+      }
+    },
+    "Honeydews": {
+      "California": {
+        "oct": 30.75,
+        "nov": 1.87,
+        "dec": 0.0
+      },
+      "Mexico-California": {
+        "oct": 0.02,
+        "nov": 0.12,
+        "dec": 0.09
+      },
+      "Arizona": {
+        "oct": 9.97,
+        "nov": 5.11,
+        "dec": 0.0
+      },
+      "Mexico-Texas": {
+        "oct": 0.01,
+        "nov": 0.07,
+        "dec": 0.07
+      },
+      "Mexico-Arizona": {
+        "oct": 13.39,
+        "nov": 31.07,
+        "dec": 14.18
+      }
+    },
+    "Lettuce, Other": {
+      "Mexico-California": {
+        "oct": 1.65,
+        "nov": 2.4,
+        "dec": 4.06
+      },
+      "Mexico-Texas": {
+        "oct": 28.28,
+        "nov": 31.82,
+        "dec": 28.54
+      },
+      "Mexico-Arizona": {
+        "oct": 2.48,
+        "nov": 2.18,
+        "dec": 4.36
+      },
+      "California": {
+        "oct": 0.0,
+        "nov": 0.08,
+        "dec": 0.0
+      }
+    },
+    "Grapefruit": {
+      "California": {
+        "oct": 7.5,
+        "nov": 7.5,
+        "dec": 7.5
+      },
+      "Mexico-Texas": {
+        "oct": 0.16,
+        "nov": 0.22,
+        "dec": 0.24
+      },
+      "Texas": {
+        "oct": 4.82,
+        "nov": 15.44,
+        "dec": 19.82
+      },
+      "Florida": {
+        "oct": 6.16,
+        "nov": 14.75,
+        "dec": 17.59
+      },
+      "Mexico-Arizona": {
+        "oct": 0.2,
+        "nov": 1.21,
+        "dec": 1.75
+      }
+    },
+    "Peppers, Jalapeno": {
+      "Mexico-Arizona": {
+        "oct": 1.38,
+        "nov": 4.29,
+        "dec": 13.4
+      },
+      "Southeast": {
+        "oct": 0.24,
+        "nov": 0.12,
+        "dec": 0.02
+      },
+      "Florida": {
+        "oct": 0.02,
+        "nov": 0.82,
+        "dec": 1.3
+      },
+      "Mexico-New Mexico": {
+        "oct": 13.71,
+        "nov": 4.5,
+        "dec": 1.7
+      },
+      "Mexico-California": {
+        "oct": 10.97,
+        "nov": 7.84,
+        "dec": 6.01
+      },
+      "Mexico-Texas": {
+        "oct": 13.3,
+        "nov": 12.4,
+        "dec": 12.17
+      }
+    },
+    "Sweet Potatoes": {
+      "Southeast": {
+        "oct": 22.36,
+        "nov": 35.55,
+        "dec": 24.56
+      },
+      "California": {
+        "oct": 5.51,
+        "nov": 8.96,
+        "dec": 5.61
+      }
+    },
+    "Bananas": {
+      "Mexico-Arizona": {
+        "oct": 3.28,
+        "nov": 3.36,
+        "dec": 3.25
+      },
+      "Mexico-California": {
+        "oct": 4.42,
+        "nov": 4.13,
+        "dec": 4.44
+      },
+      "Mexico-Texas": {
+        "oct": 26.32,
+        "nov": 24.3,
+        "dec": 25.06
+      },
+      "Mexico-New Mexico": {
+        "oct": 0.15,
+        "nov": 0.1,
+        "dec": 0.1
+      }
+    },
+    "Tomatillos": {
+      "Mexico-California": {
+        "oct": 14.32,
+        "nov": 12.17,
+        "dec": 12.94
+      },
+      "Mexico-Texas": {
+        "oct": 17.62,
+        "nov": 16.73,
+        "dec": 17.02
+      },
+      "Mexico-New Mexico": {
+        "oct": 0.3,
+        "nov": 0.35,
+        "dec": 0.24
+      },
+      "Mexico-Arizona": {
+        "oct": 0.49,
+        "nov": 1.69,
+        "dec": 4.82
+      },
+      "Florida": {
+        "oct": 0.01,
+        "nov": 0.0,
+        "dec": 0.01
+      }
+    },
+    "Raspberries": {
+      "California": {
+        "oct": 7.65,
+        "nov": 3.2,
+        "dec": 1.66
+      },
+      "Mexico-Texas": {
+        "oct": 20.49,
+        "nov": 21.18,
+        "dec": 21.18
+      },
+      "Mexico-California": {
+        "oct": 8.32,
+        "nov": 7.04,
+        "dec": 6.89
+      },
+      "Mexico-Arizona": {
+        "oct": 0.03,
+        "nov": 0.06,
+        "dec": 0.03
+      },
+      "Mexico-New Mexico": {
+        "oct": 0.01,
+        "nov": 0.01,
+        "dec": 0.0
+      }
+    },
+    "Peppers, Anaheim": {
+      "Mexico-Arizona": {
+        "oct": 0.28,
+        "nov": 0.73,
+        "dec": 2.33
+      },
+      "Mexico-New Mexico": {
+        "oct": 13.49,
+        "nov": 20.97,
+        "dec": 27.87
+      },
+      "Mexico-California": {
+        "oct": 0.32,
+        "nov": 0.27,
+        "dec": 0.66
+      },
+      "Mexico-Texas": {
+        "oct": 1.84,
+        "nov": 6.0,
+        "dec": 7.92
+      },
+      "Florida": {
+        "oct": 0.0,
+        "nov": 0.0,
+        "dec": 0.01
+      }
+    },
+    "Tangelos": {
+      "Florida": {
+        "oct": 0.0,
+        "nov": 0.0,
+        "dec": 0.0
+      },
+      "California": {
+        "oct": 26.8,
+        "nov": 26.8,
+        "dec": 26.8
+      }
+    },
+    "Squash, Zucchini": {
+      "Southeast": {
+        "oct": 2.15,
+        "nov": 0.58,
+        "dec": 0.04
+      },
+      "Mexico-Arizona": {
+        "oct": 20.32,
+        "nov": 20.43,
+        "dec": 21.37
+      },
+      "Great Lakes": {
+        "oct": 0.13,
+        "nov": 0.0,
+        "dec": 0.0
+      },
+      "Mexico-California": {
+        "oct": 1.69,
+        "nov": 0.74,
+        "dec": 0.72
+      },
+      "Mexico-Texas": {
+        "oct": 0.91,
+        "nov": 0.59,
+        "dec": 0.31
+      },
+      "Florida": {
+        "oct": 0.45,
+        "nov": 3.45,
+        "dec": 5.47
+      }
+    },
+    "Cilantro": {
+      "California": {
+        "oct": 9.32,
+        "nov": 4.99,
+        "dec": 2.01
+      },
+      "Mexico-California": {
+        "oct": 0.58,
+        "nov": 2.42,
+        "dec": 5.08
+      },
+      "Mexico-Texas": {
+        "oct": 15.07,
+        "nov": 13.66,
+        "dec": 13.42
+      },
+      "Texas": {
+        "oct": 0.04,
+        "nov": 0.74,
+        "dec": 1.42
+      },
+      "Mexico-Arizona": {
+        "oct": 0.01,
+        "nov": 0.12,
+        "dec": 0.44
+      },
+      "Arizona": {
+        "oct": 0.0,
+        "nov": 2.38,
+        "dec": 5.5
+      },
+      "Florida": {
+        "oct": 0.0,
+        "nov": 0.02,
+        "dec": 0.07
+      }
+    },
+    "Tangerines": {
+      "California": {
+        "oct": 18.75,
+        "nov": 18.75,
+        "dec": 18.75
+      },
+      "Florida": {
+        "oct": 1.63,
+        "nov": 1.62,
+        "dec": 6.78
+      },
+      "Mexico-Texas": {
+        "oct": 0.0,
+        "nov": 0.0,
+        "dec": 0.05
+      }
+    },
+    "Blackberries": {
+      "Southeast": {
+        "oct": 0.01,
+        "nov": 0.0,
+        "dec": 0.0
+      },
+      "California": {
+        "oct": 7.72,
+        "nov": 2.95,
+        "dec": 2.19
+      },
+      "Mexico-Texas": {
+        "oct": 8.34,
+        "nov": 13.43,
+        "dec": 18.54
+      },
+      "Mexico-California": {
+        "oct": 1.41,
+        "nov": 1.71,
+        "dec": 1.7
+      },
+      "Mexico-Arizona": {
+        "oct": 0.01,
+        "nov": 0.02,
+        "dec": 0.0
+      },
+      "Mexico-New Mexico": {
+        "oct": 0.02,
+        "nov": 0.01,
+        "dec": 0.0
+      }
+    },
+    "Carrots": {
+      "Mexico-Texas": {
+        "oct": 14.34,
+        "nov": 14.07,
+        "dec": 18.14
+      },
+      "Mexico-California": {
+        "oct": 1.8,
+        "nov": 1.87,
+        "dec": 2.39
+      },
+      "Mexico-Arizona": {
+        "oct": 0.27,
+        "nov": 0.24,
+        "dec": 0.44
+      },
+      "California": {
+        "oct": 0.17,
+        "nov": 0.07,
+        "dec": 0.02
+      }
+    },
+    "Beans": {
+      "New York": {
+        "oct": 0.76,
+        "nov": 0.0,
+        "dec": 0.0
+      },
+      "Mexico-Arizona": {
+        "oct": 2.57,
+        "nov": 5.04,
+        "dec": 12.45
+      },
+      "Mexico-California": {
+        "oct": 5.24,
+        "nov": 7.6,
+        "dec": 6.34
+      },
+      "Mexico-Texas": {
+        "oct": 2.44,
+        "nov": 4.35,
+        "dec": 4.36
+      },
+      "Southeast": {
+        "oct": 1.8,
+        "nov": -0.06,
+        "dec": 0.0
+      },
+      "Florida": {
+        "oct": 0.0,
+        "nov": 0.15,
+        "dec": 0.67
+      },
+      "Mexico-New Mexico": {
+        "oct": 0.0,
+        "nov": 0.04,
+        "dec": 0.0
+      }
+    },
+    "Asparagus": {
+      "Mexico-California": {
+        "oct": 18.98,
+        "nov": 15.8,
+        "dec": 14.07
+      },
+      "Mexico-Texas": {
+        "oct": 0.22,
+        "nov": 0.13,
+        "dec": 0.13
+      },
+      "Mexico-Arizona": {
+        "oct": 0.78,
+        "nov": 1.64,
+        "dec": 1.86
+      }
+    },
+    "Eggplant": {
+      "Great Lakes": {
+        "oct": 0.28,
+        "nov": 0.0,
+        "dec": 0.0
+      },
+      "Southeast": {
+        "oct": 4.01,
+        "nov": 2.66,
+        "dec": 0.33
+      },
+      "Mexico-Arizona": {
+        "oct": 1.31,
+        "nov": 9.46,
+        "dec": 18.26
+      },
+      "Mexico-California": {
+        "oct": 0.53,
+        "nov": 0.38,
+        "dec": 0.42
+      },
+      "Mexico-Texas": {
+        "oct": 1.92,
+        "nov": 2.53,
+        "dec": 3.99
+      },
+      "Florida": {
+        "oct": 0.1,
+        "nov": 2.0,
+        "dec": 2.58
+      }
+    },
+    "Brussels Sprouts": {
+      "California": {
+        "oct": 12.29,
+        "nov": 11.83,
+        "dec": 11.91
+      },
+      "Mexico-California": {
+        "oct": 2.09,
+        "nov": 2.61,
+        "dec": 3.28
+      },
+      "Mexico-Arizona": {
+        "oct": 0.22,
+        "nov": 0.26,
+        "dec": 0.45
+      },
+      "Arizona": {
+        "oct": 0.0,
+        "nov": 0.35,
+        "dec": 0.74
+      },
+      "Mexico-Texas": {
+        "oct": 0.08,
+        "nov": 0.21,
+        "dec": 0.43
+      }
+    },
+    "Vegetables Other": {
+      "Mexico-Texas": {
+        "oct": 8.53,
+        "nov": 9.36,
+        "dec": 10.46
+      },
+      "Mexico-Arizona": {
+        "oct": 1.56,
+        "nov": 2.5,
+        "dec": 3.11
+      },
+      "Mexico-California": {
+        "oct": 2.27,
+        "nov": 2.89,
+        "dec": 4.11
+      },
+      "Mexico-New Mexico": {
+        "oct": 0.03,
+        "nov": 0.02,
+        "dec": 0.02
+      }
+    },
+    "Spinach": {
+      "California": {
+        "oct": 5.03,
+        "nov": 2.99,
+        "dec": 2.72
+      },
+      "Mexico-Texas": {
+        "oct": 0.75,
+        "nov": 0.7,
+        "dec": 0.97
+      },
+      "Mexico-Arizona": {
+        "oct": 2.45,
+        "nov": 2.06,
+        "dec": 2.61
+      },
+      "Mexico-California": {
+        "oct": 0.1,
+        "nov": 0.58,
+        "dec": 1.29
+      },
+      "Arizona": {
+        "oct": 0.52,
+        "nov": 7.49,
+        "dec": 10.62
+      },
+      "Texas": {
+        "oct": 0.0,
+        "nov": 0.03,
+        "dec": 0.05
+      }
+    },
+    "Lettuce, Green Leaf": {
+      "California": {
+        "oct": 10.32,
+        "nov": 4.25,
+        "dec": 3.05
+      },
+      "Arizona": {
+        "oct": 0.04,
+        "nov": 8.81,
+        "dec": 13.95
+      },
+      "Florida": {
+        "oct": 0.0,
+        "nov": 0.01,
+        "dec": 0.26
+      }
+    },
+    "Beans, Round Green Type": {
+      "Southeast": {
+        "oct": 3.76,
+        "nov": 3.07,
+        "dec": 0.0
+      },
+      "Florida": {
+        "oct": 0.58,
+        "nov": 8.15,
+        "dec": 12.99
+      },
+      "California": {
+        "oct": 0.0,
+        "nov": 0.62,
+        "dec": 0.02
+      }
+    },
+    "Radishes": {
+      "California": {
+        "oct": 1.98,
+        "nov": 1.0,
+        "dec": 0.47
+      },
+      "Mexico-California": {
+        "oct": 3.05,
+        "nov": 5.7,
+        "dec": 6.99
+      },
+      "Mexico-Texas": {
+        "oct": 1.56,
+        "nov": 1.63,
+        "dec": 1.84
+      },
+      "Mexico-Arizona": {
+        "oct": 0.03,
+        "nov": 0.06,
+        "dec": 0.16
+      },
+      "Texas": {
+        "oct": 0.01,
+        "nov": 0.13,
+        "dec": 0.07
+      },
+      "Florida": {
+        "oct": 0.0,
+        "nov": 1.0,
+        "dec": 2.11
+      }
+    },
+    "Squash, Yellow Straightneck": {
+      "Southeast": {
+        "oct": 1.85,
+        "nov": 0.43,
+        "dec": 0.04
+      },
+      "Mexico-Arizona": {
+        "oct": 5.94,
+        "nov": 6.02,
+        "dec": 7.03
+      },
+      "Great Lakes": {
+        "oct": 0.09,
+        "nov": 0.0,
+        "dec": 0.0
+      },
+      "Mexico-California": {
+        "oct": 0.09,
+        "nov": 0.01,
+        "dec": 0.0
+      },
+      "Mexico-Texas": {
+        "oct": 0.16,
+        "nov": 0.09,
+        "dec": 0.07
+      },
+      "Florida": {
+        "oct": 0.28,
+        "nov": 2.07,
+        "dec": 3.03
+      }
+    },
+    "Chayote": {
+      "Mexico-California": {
+        "oct": 4.12,
+        "nov": 4.13,
+        "dec": 4.11
+      },
+      "Mexico-Texas": {
+        "oct": 4.41,
+        "nov": 5.57,
+        "dec": 4.76
+      }
+    },
+    "Squash, Grey": {
+      "Mexico-Arizona": {
+        "oct": 6.24,
+        "nov": 7.8,
+        "dec": 10.31
+      },
+      "Mexico-Texas": {
+        "oct": 0.59,
+        "nov": 0.72,
+        "dec": 0.81
+      },
+      "Mexico-California": {
+        "oct": 0.23,
+        "nov": 0.07,
+        "dec": 0.1
+      },
+      "Mexico-New Mexico": {
+        "oct": 0.09,
+        "nov": 0.0,
+        "dec": 0.0
+      }
+    },
+    "Peppers, Serrano": {
+      "Mexico-Arizona": {
+        "oct": 0.16,
+        "nov": 0.62,
+        "dec": 2.12
+      },
+      "Florida": {
+        "oct": 0.0,
+        "nov": 0.08,
+        "dec": 0.09
+      },
+      "Mexico-California": {
+        "oct": 3.98,
+        "nov": 3.15,
+        "dec": 3.15
+      },
+      "Mexico-Texas": {
+        "oct": 3.93,
+        "nov": 4.03,
+        "dec": 4.4
+      },
+      "Mexico-New Mexico": {
+        "oct": 0.2,
+        "nov": 0.34,
+        "dec": 0.04
+      },
+      "Southeast": {
+        "oct": 0.07,
+        "nov": 0.01,
+        "dec": 0.0
+      }
+    },
+    "Squash": {
+      "Mexico-Texas": {
+        "oct": 2.94,
+        "nov": 2.74,
+        "dec": 2.99
+      },
+      "Mexico-California": {
+        "oct": 2.99,
+        "nov": 2.47,
+        "dec": 2.24
+      },
+      "Mexico-Arizona": {
+        "oct": 1.63,
+        "nov": 3.56,
+        "dec": 3.79
+      },
+      "Florida": {
+        "oct": 0.0,
+        "nov": 0.0,
+        "dec": 0.45
+      },
+      "Great Lakes": {
+        "oct": 0.04,
+        "nov": 0.0,
+        "dec": 0.0
+      },
+      "Southeast": {
+        "oct": 0.0,
+        "nov": 0.0,
+        "dec": 0.0
+      }
+    },
+    "Tomatoes, Cherry": {
+      "Florida": {
+        "oct": 0.56,
+        "nov": 0.76,
+        "dec": 0.63
+      },
+      "Mexico-Texas": {
+        "oct": 2.93,
+        "nov": 6.12,
+        "dec": 9.01
+      },
+      "Mexico-Arizona": {
+        "oct": 0.71,
+        "nov": 0.8,
+        "dec": 0.88
+      },
+      "Mexico-California": {
+        "oct": 1.1,
+        "nov": 0.84,
+        "dec": 0.94
+      },
+      "Mid-Atlantic": {
+        "oct": 0.12,
+        "nov": 0.0,
+        "dec": 0.0
+      },
+      "Southeast": {
+        "oct": 0.13,
+        "nov": 0.04,
+        "dec": 0.0
+      }
+    },
+    "Pecans": {
+      "Mexico-Texas": {
+        "oct": 6.54,
+        "nov": 8.36,
+        "dec": 9.38
+      },
+      "Mexico-New Mexico": {
+        "oct": 0.2,
+        "nov": 0.4,
+        "dec": 0.28
+      },
+      "Mexico-Arizona": {
+        "oct": 0.0,
+        "nov": 0.0,
+        "dec": 0.0
+      }
+    },
+    "Peaches": {
+      "California": {
+        "oct": 23.36,
+        "nov": 0.45,
+        "dec": 0.0
+      },
+      "PNW": {
+        "oct": 0.51,
+        "nov": 0.0,
+        "dec": 0.0
+      },
+      "Mid-Atlantic": {
+        "oct": 0.01,
+        "nov": 0.0,
+        "dec": 0.0
+      }
+    },
+    "Squash, Butternut": {
+      "Mexico-Arizona": {
+        "oct": 1.13,
+        "nov": 5.86,
+        "dec": 11.92
+      },
+      "Mexico-California": {
+        "oct": 0.66,
+        "nov": 0.94,
+        "dec": 0.87
+      },
+      "Mexico-Texas": {
+        "oct": 0.01,
+        "nov": 0.05,
+        "dec": 0.07
+      },
+      "Florida": {
+        "oct": 0.0,
+        "nov": 0.22,
+        "dec": 0.16
+      }
+    },
+    "Greens, Kale": {
+      "Southeast": {
+        "oct": 0.95,
+        "nov": 1.7,
+        "dec": 2.08
+      },
+      "California": {
+        "oct": 3.21,
+        "nov": 1.97,
+        "dec": 1.49
+      },
+      "Mexico-Texas": {
+        "oct": 0.03,
+        "nov": 0.03,
+        "dec": 0.06
+      },
+      "Mexico-California": {
+        "oct": 0.29,
+        "nov": 1.72,
+        "dec": 2.44
+      },
+      "Mexico-Arizona": {
+        "oct": 0.69,
+        "nov": 0.55,
+        "dec": 0.82
+      },
+      "Texas": {
+        "oct": 0.04,
+        "nov": 0.33,
+        "dec": 0.86
+      },
+      "Arizona": {
+        "oct": 0.03,
+        "nov": 0.66,
+        "dec": 1.21
+      },
+      "Florida": {
+        "oct": 0.0,
+        "nov": 0.0,
+        "dec": 0.01
+      }
+    },
+    "Cactus Leaf (nopales)": {
+      "Mexico-California": {
+        "oct": 3.64,
+        "nov": 3.09,
+        "dec": 3.0
+      },
+      "Mexico-Texas": {
+        "oct": 3.99,
+        "nov": 3.71,
+        "dec": 3.56
+      },
+      "Mexico-Arizona": {
+        "oct": 0.07,
+        "nov": 0.04,
+        "dec": 0.05
+      }
+    },
+    "Jicama": {
+      "Mexico-California": {
+        "oct": 3.37,
+        "nov": 3.41,
+        "dec": 3.95
+      },
+      "Mexico-Texas": {
+        "oct": 2.66,
+        "nov": 2.5,
+        "dec": 2.96
+      },
+      "Mexico-New Mexico": {
+        "oct": 0.0,
+        "nov": 0.0,
+        "dec": 0.0
+      },
+      "Mexico-Arizona": {
+        "oct": 0.0,
+        "nov": 0.0,
+        "dec": 0.01
+      }
+    },
+    "Greens, Collard": {
+      "Southeast": {
+        "oct": 2.39,
+        "nov": 8.51,
+        "dec": 6.57
+      },
+      "Mexico-California": {
+        "oct": 0.05,
+        "nov": 0.16,
+        "dec": 0.28
+      },
+      "Texas": {
+        "oct": 0.02,
+        "nov": 0.29,
+        "dec": 0.52
+      },
+      "Mexico-Texas": {
+        "oct": 0.0,
+        "nov": 0.0,
+        "dec": 0.0
+      },
+      "California": {
+        "oct": -0.01,
+        "nov": 0.0,
+        "dec": 0.0
+      },
+      "Mexico-Arizona": {
+        "oct": 0.0,
+        "nov": 0.0,
+        "dec": 0.0
+      }
+    },
+    "Pomegranates": {
+      "California": {
+        "oct": 9.95,
+        "nov": 5.81,
+        "dec": 2.76
+      },
+      "Mexico-Texas": {
+        "oct": 0.22,
+        "nov": 0.0,
+        "dec": 0.0
+      }
+    },
+    "Blueberries": {
+      "PNW": {
+        "oct": 1.28,
+        "nov": 0.0,
+        "dec": 0.0
+      },
+      "California": {
+        "oct": 0.58,
+        "nov": 0.23,
+        "dec": 0.22
+      },
+      "Mexico-California": {
+        "oct": 0.89,
+        "nov": 0.65,
+        "dec": 0.68
+      },
+      "Mexico-Texas": {
+        "oct": 2.33,
+        "nov": 4.3,
+        "dec": 6.69
+      },
+      "Mexico-Arizona": {
+        "oct": 0.02,
+        "nov": 0.05,
+        "dec": 0.01
+      },
+      "Great Lakes": {
+        "oct": 0.06,
+        "nov": 0.0,
+        "dec": 0.0
+      }
+    },
+    "Peppers, Poblano": {
+      "Mexico-Arizona": {
+        "oct": 0.07,
+        "nov": 0.27,
+        "dec": 1.43
+      },
+      "Southeast": {
+        "oct": 0.06,
+        "nov": 0.02,
+        "dec": 0.0
+      },
+      "Florida": {
+        "oct": 0.0,
+        "nov": 0.27,
+        "dec": 0.46
+      },
+      "Mexico-California": {
+        "oct": 0.17,
+        "nov": 0.2,
+        "dec": 0.9
+      },
+      "Mexico-Texas": {
+        "oct": 4.44,
+        "nov": 4.24,
+        "dec": 4.14
+      },
+      "Mexico-New Mexico": {
+        "oct": 0.89,
+        "nov": 0.24,
+        "dec": 0.02
+      }
+    },
+    "Bok Choy": {
+      "California": {
+        "oct": 1.22,
+        "nov": 0.65,
+        "dec": 0.22
+      },
+      "Mexico-Arizona": {
+        "oct": 0.25,
+        "nov": 0.33,
+        "dec": 0.97
+      },
+      "Mexico-Texas": {
+        "oct": 2.98,
+        "nov": 3.74,
+        "dec": 4.88
+      },
+      "Mexico-California": {
+        "oct": 0.06,
+        "nov": 0.16,
+        "dec": 0.99
+      },
+      "Arizona": {
+        "oct": 0.0,
+        "nov": 0.22,
+        "dec": 0.59
+      },
+      "Texas": {
+        "oct": 0.0,
+        "nov": 0.04,
+        "dec": 0.11
+      },
+      "Florida": {
+        "oct": 0.0,
+        "nov": 0.02,
+        "dec": 0.15
+      }
+    },
+    "Greens": {
+      "Southeast": {
+        "oct": 4.34,
+        "nov": 7.25,
+        "dec": 5.71
+      },
+      "California": {
+        "oct": 0.0,
+        "nov": 0.01,
+        "dec": 0.01
+      }
+    },
+    "Coconuts": {
+      "Mexico-California": {
+        "oct": 2.56,
+        "nov": 2.26,
+        "dec": 1.95
+      },
+      "Mexico-Texas": {
+        "oct": 4.08,
+        "nov": 3.62,
+        "dec": 2.65
+      },
+      "Mexico-New Mexico": {
+        "oct": 0.0,
+        "nov": 0.0,
+        "dec": 0.0
+      },
+      "Mexico-Arizona": {
+        "oct": 0.02,
+        "nov": 0.04,
+        "dec": 0.03
+      }
+    },
+    "Chinese Cabbage": {
+      "California": {
+        "oct": 3.43,
+        "nov": 2.36,
+        "dec": 1.43
+      },
+      "Mexico-Arizona": {
+        "oct": 0.06,
+        "nov": 0.06,
+        "dec": 0.06
+      },
+      "Mexico-Texas": {
+        "oct": 1.31,
+        "nov": 1.12,
+        "dec": 1.31
+      },
+      "Arizona": {
+        "oct": 0.0,
+        "nov": 0.32,
+        "dec": 2.15
+      },
+      "Texas": {
+        "oct": 0.0,
+        "nov": 0.03,
+        "dec": 0.16
+      },
+      "Mexico-California": {
+        "oct": 0.1,
+        "nov": 0.2,
+        "dec": 0.91
+      },
+      "Southeast": {
+        "oct": 0.0,
+        "nov": 0.0,
+        "dec": 0.11
+      }
+    },
+    "Kiwifruit": {
+      "California": {
+        "oct": 4.14,
+        "nov": 5.74,
+        "dec": 5.21
+      }
+    },
+    "Squash, Kabocha": {
+      "Mexico-Arizona": {
+        "oct": 0.83,
+        "nov": 6.0,
+        "dec": 7.39
+      },
+      "Mexico-California": {
+        "oct": 0.01,
+        "nov": 0.22,
+        "dec": 0.31
+      },
+      "Mexico-Texas": {
+        "oct": 0.0,
+        "nov": 0.0,
+        "dec": 0.0
+      }
+    }
+  },
+  "commodities": [
+    "All Commodities",
+    "Potatoes",
+    "Apples",
+    "Onions, Dry",
+    "Avocados",
+    "Oranges",
+    "Grapes",
+    "Tomatoes, Plum Type",
+    "Tomatoes",
+    "Cucumbers",
+    "Lettuce, Iceberg",
+    "Lettuce, Romaine",
+    "Lemons",
+    "Watermelons",
+    "Clementines",
+    "Strawberries",
+    "Celery",
+    "Peppers, Bell Type",
+    "Limes",
+    "Pears",
+    "Broccoli",
+    "Cabbage",
+    "Cantaloupes",
+    "Lettuce, Processed",
+    "Peppers, Other",
+    "Cauliflower",
+    "Tomatoes, Grape Type",
+    "Corn, Sweet",
+    "Onions, Green",
+    "Papaya",
+    "Honeydews",
+    "Lettuce, Other",
+    "Grapefruit",
+    "Peppers, Jalapeno",
+    "Sweet Potatoes",
+    "Bananas",
+    "Tomatillos",
+    "Raspberries",
+    "Peppers, Anaheim",
+    "Tangelos",
+    "Squash, Zucchini",
+    "Cilantro",
+    "Tangerines",
+    "Blackberries",
+    "Carrots",
+    "Beans",
+    "Asparagus",
+    "Eggplant",
+    "Brussels Sprouts",
+    "Vegetables Other",
+    "Spinach",
+    "Lettuce, Green Leaf",
+    "Beans, Round Green Type",
+    "Radishes",
+    "Squash, Yellow Straightneck",
+    "Chayote",
+    "Squash, Grey",
+    "Peppers, Serrano",
+    "Squash",
+    "Tomatoes, Cherry",
+    "Pecans",
+    "Peaches",
+    "Squash, Butternut",
+    "Greens, Kale",
+    "Cactus Leaf (nopales)",
+    "Jicama",
+    "Greens, Collard",
+    "Pomegranates",
+    "Blueberries",
+    "Peppers, Poblano",
+    "Bok Choy",
+    "Greens",
+    "Coconuts",
+    "Chinese Cabbage",
+    "Kiwifruit",
+    "Squash, Kabocha"
+  ],
+  "regions": [
+    "Arizona",
+    "California",
+    "Colorado",
+    "Florida",
+    "Great Lakes",
+    "Mexico-Arizona",
+    "Mexico-California",
+    "Mexico-New Mexico",
+    "Mexico-Texas",
+    "Mid-Atlantic",
+    "New York",
+    "PNW",
+    "Southeast",
+    "Texas"
+  ],
+  "known_regions": [
+    "Arizona",
+    "California",
+    "Colorado",
+    "Florida",
+    "Great Lakes",
+    "Mexico-Arizona",
+    "Mexico-California",
+    "Mexico-New Mexico",
+    "Mexico-Texas",
+    "Mid-Atlantic",
+    "New York",
+    "PNW",
+    "Southeast",
+    "Texas"
+  ]
+}
