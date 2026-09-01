@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Q4 2026 Reefer &amp; Perishable Forecast Charts — Fresh Freight</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --bg: #ffffff;
+    --bg-soft: #fafafa;
+    --ink: #1a1a1a;
+    --ink-soft: #5a5a5a;
+    --ink-muted: #9a9a9a;
+    --rule: #e5e5e5;
+    --accent: #ec7700;        /* Mango Tango */
+    --accent-dark: #8c3f00;
+    --accent-light: #fdf3e6;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: 'Open Sans', system-ui, sans-serif;
+    font-size: 15px;
+    line-height: 1.55;
+  }
+  h1, h2, h3 { font-family: 'Montserrat', sans-serif; }
+  .wrap { max-width: 920px; margin: 0 auto; padding: 48px 24px 64px; }
+
+  .head { border-bottom: 3px solid var(--accent); padding-bottom: 18px; margin-bottom: 8px; }
+  .eyebrow {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 12px; font-weight: 600; letter-spacing: 0.14em;
+    text-transform: uppercase; color: var(--accent-dark);
+  }
+  .head h1 { font-size: 30px; font-weight: 700; letter-spacing: -0.01em; margin-top: 6px; }
+  .head p { color: var(--ink-soft); margin-top: 10px; max-width: 640px; }
+
+  .grid {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 16px; margin-top: 32px;
+  }
+  .card {
+    display: block; text-decoration: none; color: inherit;
+    border: 1px solid var(--rule); border-radius: 12px; padding: 20px 20px 22px;
+    background: var(--bg); transition: border-color 140ms ease, box-shadow 140ms ease, transform 140ms ease;
+  }
+  .card:hover { border-color: var(--accent); box-shadow: 0 6px 20px rgba(0,0,0,0.07); transform: translateY(-2px); }
+  .card .tag {
+    font-family: 'Montserrat', sans-serif; font-size: 10.5px; font-weight: 600;
+    letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent-dark);
+    background: var(--accent-light); display: inline-block; padding: 3px 9px; border-radius: 999px;
+  }
+  .card h3 { font-size: 17px; font-weight: 700; margin: 12px 0 6px; }
+  .card p { font-size: 13.5px; color: var(--ink-soft); }
+  .card .go { margin-top: 14px; font-size: 13px; font-weight: 600; color: var(--accent); }
+
+  .soon { opacity: 0.55; pointer-events: none; }
+  .soon .go { color: var(--ink-muted); }
+
+  .foot { margin-top: 40px; font-size: 12px; color: var(--ink-muted); border-top: 1px solid var(--rule); padding-top: 16px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="head">
+    <div class="eyebrow">Fresh Freight · Market Intelligence</div>
+    <h1>Q4 2026 Reefer &amp; Perishable Forecast</h1>
+    <p>Live freight-market charts for the October–December quarter — produce volumes, reefer capacity, rates, and fuel. Each chart auto-refreshes from its public data source and is built for embedding in customer reports.</p>
+  </div>
+
+  <div class="grid">
+    <a class="card" href="usda-commodity-heatmap/">
+      <span class="tag">USDA · Volumes</span>
+      <h3>Reefer Volume Heat Map</h3>
+      <p>Q4 fruit &amp; vegetable shipping volumes by USDA shipping region, 4-year average, filterable by commodity and month.</p>
+      <div class="go">View chart →</div>
+    </a>
+  </div>
+
+  <div class="foot">
+    Data sources: USDA AMS, EIA, NOAA CPC, DAT Freight &amp; Analytics. Charts refresh on demand via GitHub Actions.
+  </div>
+</div>
+</body>
+</html>

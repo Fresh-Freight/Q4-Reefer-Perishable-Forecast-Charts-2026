@@ -1,7 +1,7 @@
 """
 build_dashboard.py
 ==================
-Reads data/q4_availability.json, renders templates/template.html.j2,
+Reads data/q4_volumes.json, renders templates/template.html.j2,
 writes docs/index.html for GitHub Pages.
 """
 from __future__ import annotations
@@ -15,13 +15,13 @@ from jinja2 import Environment, FileSystemLoader, select_autoescape
 
 def main() -> None:
     root = Path(__file__).resolve().parent.parent
-    data_path = root / "data" / "q4_availability.json"
+    data_path = root / "data" / "q4_volumes.json"
     template_dir = root / "templates"
     output_path = root / "docs" / "index.html"
     output_path.parent.mkdir(exist_ok=True, parents=True)
 
     if not data_path.exists():
-        raise FileNotFoundError(f"{data_path} not found — run fetch_availability.py first.")
+        raise FileNotFoundError(f"{data_path} not found — run fetch_data.py first.")
 
     data = json.loads(data_path.read_text())
     meta = data["metadata"]
@@ -36,10 +36,9 @@ def main() -> None:
     year_range = f"{meta['years'][0]}–{meta['years'][-1]}"
 
     html = template.render(
-        availability_json=json.dumps(data["availability"]),
+        production_json=json.dumps(data["production"]),
         commodities_json=json.dumps(data["commodities"]),
         regions_json=json.dumps(data["regions"]),
-        weeks_json=json.dumps(data["weeks"]),
         year_range=year_range,
         build_date=now.strftime("%b %d, %Y"),
     )

@@ -4,3 +4,5 @@ __pycache__/
 venv/
 .env
 .DS_Store
+# Generated Pages output — built fresh by CI each run
+/docs/
