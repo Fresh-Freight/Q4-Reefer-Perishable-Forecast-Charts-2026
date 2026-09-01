@@ -149,12 +149,34 @@
     box-shadow: 0 6px 20px rgba(0,0,0,0.08);
     padding: 6px;
     min-width: 240px;
-    max-height: 340px;
-    overflow-y: auto;
+    max-height: 380px;
+    overflow: hidden;
     z-index: 30;
     display: none;
   }
-  .more-panel.open { display: block; }
+  .more-panel.open { display: flex; flex-direction: column; }
+  .more-search {
+    width: 100%;
+    box-sizing: border-box;
+    margin-bottom: 6px;
+    padding: 8px 10px;
+    border: 1px solid var(--rule);
+    border-radius: 6px;
+    font-family: 'Open Sans', sans-serif;
+    font-size: 13px;
+    color: var(--ink);
+    outline: none;
+  }
+  .more-search:focus { border-color: var(--green); }
+  .more-search::placeholder { color: var(--ink-muted); }
+  .more-list { overflow-y: auto; }
+  .more-empty {
+    padding: 10px;
+    font-family: 'Open Sans', sans-serif;
+    font-size: 12.5px;
+    color: var(--ink-muted);
+    text-align: center;
+  }
   .more-item {
     display: block;
     width: 100%;
@@ -743,9 +765,14 @@
 
     if (dropdownCommodities.length) {
       const panel = document.getElementById("morePanel");
-      panel.innerHTML = dropdownCommodities
+      const itemsHtml = dropdownCommodities
         .map(c => `<button class="more-item ${c===currentCommodity?'active':''}" data-c="${c}" role="menuitem">${c}</button>`)
         .join("");
+      panel.innerHTML =
+        `<input type="text" class="more-search" id="moreSearch" placeholder="Search commodities…" autocomplete="off" aria-label="Search commodities" />
+         <div class="more-list" id="moreList">${itemsHtml}</div>
+         <div class="more-empty" id="moreEmpty" hidden>No matches</div>`;
+
       panel.querySelectorAll(".more-item").forEach(b => {
         b.addEventListener("click", () => {
           currentCommodity = b.dataset.c;
@@ -754,10 +781,44 @@
           renderAll();
         });
       });
+
+      const search = document.getElementById("moreSearch");
+      const empty = document.getElementById("moreEmpty");
+      function applyFilter() {
+        const q = search.value.trim().toLowerCase();
+        let visible = 0;
+        panel.querySelectorAll(".more-item").forEach(b => {
+          const match = b.dataset.c.toLowerCase().includes(q);
+          b.style.display = match ? "" : "none";
+          if (match) visible++;
+        });
+        empty.hidden = visible !== 0;
+      }
+      // Keep clicks/keys inside the search box from bubbling to the
+      // document handler that closes the dropdown.
+      search.addEventListener("click", (e) => e.stopPropagation());
+      search.addEventListener("input", applyFilter);
+      search.addEventListener("keydown", (e) => {
+        if (e.key === "Enter") {
+          const firstVisible = Array.from(panel.querySelectorAll(".more-item"))
+            .find(b => b.style.display !== "none");
+          if (firstVisible) firstVisible.click();
+        } else if (e.key === "Escape") {
+          closeDropdown();
+          const pill = document.getElementById("morePill");
+          if (pill) pill.focus();
+        }
+      });
+
       document.getElementById("morePill").addEventListener("click", (e) => {
         e.stopPropagation();
         const open = panel.classList.toggle("open");
         e.currentTarget.setAttribute("aria-expanded", open ? "true" : "false");
+        if (open) {
+          search.value = "";
+          applyFilter();
+          setTimeout(() => search.focus(), 0);  // focus after the panel paints
+        }
       });
     }
   }
