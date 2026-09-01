@@ -9,7 +9,7 @@
     ],
     "n_years_avg": 4,
     "metric": "Refrigerated truck volume, Q4 (Oct-Dec) average, in millions of pounds",
-    "fetched_at": "2026-09-01T18:29:48.025081"
+    "fetched_at": "2026-09-01T19:37:53.050147"
   },
   "production": {
     "All Commodities": {
@@ -34,14 +34,14 @@
         "dec": 19.48
       },
       "Texas": {
-        "oct": 48.73,
-        "nov": 63.96,
-        "dec": 74.93
+        "oct": 48.77,
+        "nov": 64.34,
+        "dec": 75.96
       },
       "California": {
-        "oct": 1844.71,
-        "nov": 1223.73,
-        "dec": 867.8
+        "oct": 1866.45,
+        "nov": 1244.48,
+        "dec": 885.0
       },
       "New York": {
         "oct": 90.74,
@@ -54,34 +54,34 @@
         "dec": 64.46
       },
       "Mexico-Arizona": {
-        "oct": 265.85,
-        "nov": 412.6,
-        "dec": 483.51
+        "oct": 271.84,
+        "nov": 420.68,
+        "dec": 498.06
       },
       "Mexico-California": {
-        "oct": 271.15,
-        "nov": 259.47,
-        "dec": 306.09
+        "oct": 279.62,
+        "nov": 267.58,
+        "dec": 316.69
       },
       "Mexico-Texas": {
-        "oct": 1026.75,
-        "nov": 1045.78,
-        "dec": 1116.46
+        "oct": 1059.56,
+        "nov": 1070.12,
+        "dec": 1146.36
       },
       "Mexico-New Mexico": {
-        "oct": 67.43,
+        "oct": 68.81,
         "nov": 57.38,
         "dec": 54.57
       },
       "Florida": {
-        "oct": 43.8,
-        "nov": 166.13,
-        "dec": 292.37
+        "oct": 45.15,
+        "nov": 167.18,
+        "dec": 292.77
       },
       "Arizona": {
         "oct": 61.8,
-        "nov": 299.54,
-        "dec": 430.56
+        "nov": 301.87,
+        "dec": 434.92
       }
     },
     "Potatoes": {
@@ -2153,6 +2153,436 @@
         "nov": 0.0,
         "dec": 0.0
       }
+    },
+    "Artichokes": {
+      "California": {
+        "oct": 4.52,
+        "nov": 4.75,
+        "dec": 5.06
+      },
+      "Mexico-Texas": {
+        "oct": 0.0,
+        "nov": 0.0,
+        "dec": 0.0
+      },
+      "Mexico-Arizona": {
+        "oct": 0.0,
+        "nov": 0.0,
+        "dec": 0.08
+      },
+      "Mexico-California": {
+        "oct": 0.0,
+        "nov": 0.0,
+        "dec": 0.21
+      }
+    },
+    "Pummelo": {
+      "California": {
+        "oct": 4.71,
+        "nov": 4.71,
+        "dec": 3.5
+      }
+    },
+    "Satsuma": {
+      "California": {
+        "oct": 4.24,
+        "nov": 4.24,
+        "dec": 4.24
+      }
+    },
+    "Parsley": {
+      "California": {
+        "oct": 4.13,
+        "nov": 2.47,
+        "dec": 1.71
+      },
+      "Mexico-Texas": {
+        "oct": 0.09,
+        "nov": 0.15,
+        "dec": 0.18
+      },
+      "Texas": {
+        "oct": 0.0,
+        "nov": 0.11,
+        "dec": 0.73
+      },
+      "Arizona": {
+        "oct": 0.0,
+        "nov": 0.66,
+        "dec": 1.66
+      },
+      "Mexico-California": {
+        "oct": 0.01,
+        "nov": 0.01,
+        "dec": 0.08
+      },
+      "Florida": {
+        "oct": 0.0,
+        "nov": 0.0,
+        "dec": 0.02
+      },
+      "Mexico-Arizona": {
+        "oct": 0.0,
+        "nov": 0.0,
+        "dec": 0.02
+      }
+    },
+    "Beets": {
+      "California": {
+        "oct": 0.63,
+        "nov": 0.27,
+        "dec": 0.06
+      },
+      "Mexico-California": {
+        "oct": 1.03,
+        "nov": 2.2,
+        "dec": 2.77
+      },
+      "Mexico-Texas": {
+        "oct": 1.34,
+        "nov": 1.43,
+        "dec": 1.37
+      },
+      "Texas": {
+        "oct": 0.04,
+        "nov": 0.27,
+        "dec": 0.3
+      },
+      "Mexico-Arizona": {
+        "oct": 0.0,
+        "nov": 0.0,
+        "dec": 0.08
+      }
+    },
+    "Peppers, Mixed Mini Sweet Types": {
+      "Mexico-Arizona": {
+        "oct": 0.43,
+        "nov": 0.92,
+        "dec": 2.76
+      },
+      "Mexico-California": {
+        "oct": 1.13,
+        "nov": 1.39,
+        "dec": 1.08
+      },
+      "Mexico-Texas": {
+        "oct": 1.08,
+        "nov": 0.79,
+        "dec": 1.08
+      },
+      "Mexico-New Mexico": {
+        "oct": 0.24,
+        "nov": 0.0,
+        "dec": 0.0
+      }
+    },
+    "Pineapples": {
+      "Mexico-Arizona": {
+        "oct": 0.18,
+        "nov": 0.21,
+        "dec": 0.24
+      },
+      "Mexico-California": {
+        "oct": 0.08,
+        "nov": 0.07,
+        "dec": 0.03
+      },
+      "Mexico-Texas": {
+        "oct": 3.28,
+        "nov": 2.81,
+        "dec": 3.79
+      }
+    },
+    "Okra": {
+      "Florida": {
+        "oct": 1.35,
+        "nov": 1.04,
+        "dec": 0.27
+      },
+      "Mexico-Texas": {
+        "oct": 5.87,
+        "nov": 1.7,
+        "dec": 0.22
+      },
+      "Mexico-Arizona": {
+        "oct": 0.0,
+        "nov": 0.0,
+        "dec": 0.0
+      }
+    },
+    "Guava": {
+      "Mexico-Texas": {
+        "oct": 2.34,
+        "nov": 3.1,
+        "dec": 4.5
+      },
+      "Mexico-New Mexico": {
+        "oct": 0.0,
+        "nov": 0.0,
+        "dec": 0.0
+      },
+      "Mexico-California": {
+        "oct": 0.0,
+        "nov": 0.0,
+        "dec": 0.0
+      }
+    },
+    "Cactus Pears": {
+      "Mexico-California": {
+        "oct": 2.7,
+        "nov": 0.83,
+        "dec": 0.32
+      },
+      "Mexico-Texas": {
+        "oct": 3.59,
+        "nov": 1.61,
+        "dec": 0.55
+      },
+      "Mexico-New Mexico": {
+        "oct": 0.0,
+        "nov": 0.0,
+        "dec": 0.0
+      }
+    },
+    "Lettuce, Red Leaf": {
+      "California": {
+        "oct": 2.73,
+        "nov": 1.24,
+        "dec": 1.03
+      },
+      "Arizona": {
+        "oct": 0.0,
+        "nov": 1.67,
+        "dec": 2.7
+      },
+      "Florida": {
+        "oct": 0.0,
+        "nov": 0.0,
+        "dec": 0.08
+      }
+    },
+    "Plantains": {
+      "Mexico-Texas": {
+        "oct": 2.8,
+        "nov": 2.84,
+        "dec": 2.97
+      },
+      "Mexico-California": {
+        "oct": 0.24,
+        "nov": 0.31,
+        "dec": 0.22
+      }
+    },
+    "Squash, Spaghetti": {
+      "Mexico-Arizona": {
+        "oct": 0.37,
+        "nov": 2.59,
+        "dec": 5.65
+      },
+      "Mexico-Texas": {
+        "oct": 0.01,
+        "nov": 0.03,
+        "dec": 0.1
+      },
+      "Mexico-California": {
+        "oct": 0.02,
+        "nov": 0.02,
+        "dec": 0.02
+      },
+      "Florida": {
+        "oct": 0.0,
+        "nov": 0.0,
+        "dec": 0.01
+      }
+    },
+    "Mangoes": {
+      "Mexico-Arizona": {
+        "oct": 2.95,
+        "nov": 0.01,
+        "dec": 0.01
+      },
+      "Mexico-California": {
+        "oct": 0.45,
+        "nov": 0.16,
+        "dec": 0.03
+      },
+      "Mexico-Texas": {
+        "oct": 2.61,
+        "nov": 0.65,
+        "dec": 1.24
+      }
+    },
+    "Taro": {
+      "Mexico-Texas": {
+        "oct": 2.62,
+        "nov": 2.41,
+        "dec": 2.44
+      },
+      "Mexico-California": {
+        "oct": 0.21,
+        "nov": 0.13,
+        "dec": 0.15
+      },
+      "Mexico-Arizona": {
+        "oct": 0.0,
+        "nov": 0.04,
+        "dec": 0.0
+      }
+    },
+    "Squash, Acorn": {
+      "Mexico-Arizona": {
+        "oct": 0.12,
+        "nov": 2.17,
+        "dec": 2.35
+      },
+      "Mexico-Texas": {
+        "oct": 0.48,
+        "nov": 0.38,
+        "dec": 0.45
+      },
+      "Mexico-California": {
+        "oct": 0.06,
+        "nov": 0.06,
+        "dec": 0.14
+      },
+      "Florida": {
+        "oct": 0.0,
+        "nov": 0.01,
+        "dec": 0.02
+      }
+    },
+    "Malanga/ Yautia": {
+      "Mexico-Texas": {
+        "oct": 1.98,
+        "nov": 1.9,
+        "dec": 2.02
+      }
+    },
+    "Jackfruit": {
+      "Mexico-California": {
+        "oct": 1.11,
+        "nov": 0.72,
+        "dec": 0.74
+      },
+      "Mexico-Texas": {
+        "oct": 1.25,
+        "nov": 0.93,
+        "dec": 0.96
+      },
+      "Mexico-Arizona": {
+        "oct": 0.02,
+        "nov": 0.0,
+        "dec": 0.02
+      }
+    },
+    "Pumpkins": {
+      "Mexico-Arizona": {
+        "oct": 0.6,
+        "nov": 0.56,
+        "dec": 0.89
+      },
+      "Mexico-California": {
+        "oct": 0.08,
+        "nov": 0.03,
+        "dec": 0.02
+      },
+      "Mexico-Texas": {
+        "oct": 0.51,
+        "nov": 0.86,
+        "dec": 1.02
+      },
+      "Mexico-New Mexico": {
+        "oct": 1.14,
+        "nov": 0.0,
+        "dec": 0.0
+      }
+    },
+    "Chives": {
+      "Mexico-Arizona": {
+        "oct": 0.49,
+        "nov": 0.45,
+        "dec": 0.47
+      },
+      "Mexico-California": {
+        "oct": 0.13,
+        "nov": 0.2,
+        "dec": 1.05
+      },
+      "Mexico-Texas": {
+        "oct": 0.9,
+        "nov": 0.81,
+        "dec": 1.1
+      }
+    },
+    "Persimmons": {
+      "California": {
+        "oct": 0.76,
+        "nov": 3.06,
+        "dec": 1.6
+      }
+    },
+    "Mushrooms": {
+      "Mexico-Texas": {
+        "oct": 1.92,
+        "nov": 1.8,
+        "dec": 1.65
+      },
+      "Mexico-California": {
+        "oct": 0.0,
+        "nov": 0.0,
+        "dec": 0.0
+      }
+    },
+    "Peas, Sugar Snap": {
+      "California": {
+        "oct": 0.02,
+        "nov": 0.01,
+        "dec": 0.0
+      },
+      "Mexico-California": {
+        "oct": 0.74,
+        "nov": 1.44,
+        "dec": 2.43
+      },
+      "Mexico-Texas": {
+        "oct": 0.14,
+        "nov": 0.14,
+        "dec": 0.24
+      },
+      "Mexico-Arizona": {
+        "oct": 0.0,
+        "nov": 0.02,
+        "dec": 0.09
+      }
+    },
+    "Miscellaneous Asian Vegetables": {
+      "Mexico-Arizona": {
+        "oct": 0.0,
+        "nov": 0.0,
+        "dec": 0.46
+      },
+      "Mexico-Texas": {
+        "oct": 0.0,
+        "nov": 0.0,
+        "dec": 4.02
+      },
+      "Mexico-California": {
+        "oct": 0.0,
+        "nov": 0.0,
+        "dec": 0.75
+      }
+    },
+    "Dates": {
+      "Mexico-Arizona": {
+        "oct": 0.83,
+        "nov": 1.11,
+        "dec": 1.43
+      },
+      "Mexico-California": {
+        "oct": 0.48,
+        "nov": 0.54,
+        "dec": 0.56
+      }
     }
   },
   "commodities": [
@@ -2231,7 +2661,32 @@
     "Coconuts",
     "Chinese Cabbage",
     "Kiwifruit",
-    "Squash, Kabocha"
+    "Squash, Kabocha",
+    "Artichokes",
+    "Pummelo",
+    "Satsuma",
+    "Parsley",
+    "Beets",
+    "Peppers, Mixed Mini Sweet Types",
+    "Pineapples",
+    "Okra",
+    "Guava",
+    "Cactus Pears",
+    "Lettuce, Red Leaf",
+    "Plantains",
+    "Squash, Spaghetti",
+    "Mangoes",
+    "Taro",
+    "Squash, Acorn",
+    "Malanga/ Yautia",
+    "Jackfruit",
+    "Pumpkins",
+    "Chives",
+    "Persimmons",
+    "Mushrooms",
+    "Peas, Sugar Snap",
+    "Miscellaneous Asian Vegetables",
+    "Dates"
   ],
   "regions": [
     "Arizona",
