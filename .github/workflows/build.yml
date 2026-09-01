@@ -44,6 +44,17 @@ jobs:
           cp charts/usda-commodity-heatmap/docs/index.html docs/usda-commodity-heatmap/index.html
 
       # ─────────────────────────────────────────────────────────────
+      # climate-map  (static site; NOAA CPC OND seasonal outlook)
+      # ─────────────────────────────────────────────────────────────
+      - name: Stage — climate-map
+        run: |
+          mkdir -p docs/climate-map
+          cp charts/climate-map/index.html charts/climate-map/app.js \
+             charts/climate-map/data.js charts/climate-map/styles.css \
+             docs/climate-map/
+          cp -r charts/climate-map/data docs/climate-map/data
+
+      # ─────────────────────────────────────────────────────────────
       # Landing page
       # ─────────────────────────────────────────────────────────────
       - name: Stage landing page

@@ -1,0 +1,7 @@
+{
+  "issueDate": "2026-08-20",
+  "validSeason": "OND 2026",
+  "validSeasonLabel": "October–November–December 2026",
+  "source": "NOAA CPC Seasonal Outlook via NWS ArcGIS (outlooks/cpc_sea_temp_outlk & cpc_sea_precip_outlk, Lead 2 = OND)",
+  "note": "Unmodified NOAA CPC probability contours (cat/prob fields); geometry simplified for web with mapshaper at 2-decimal precision."
+}

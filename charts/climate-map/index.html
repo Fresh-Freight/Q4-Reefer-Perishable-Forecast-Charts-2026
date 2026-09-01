@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Q4 2026 Climate Outlook &mdash; NOAA CPC Seasonal Outlook</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <main class="container">
+    <header class="header">
+      <h1>NOAA Seasonal Climate Outlook &mdash; Q4 2026</h1>
+      <p class="subtitle">Three-month temperature &amp; precipitation outlook from the NOAA Climate Prediction Center.</p>
+      <p class="meta-line">
+        Valid: <strong id="valid-season">&hellip;</strong>
+        &nbsp;&middot;&nbsp;
+        Issued: <strong id="issued-date">&hellip;</strong>
+      </p>
+    </header>
+
+    <div class="controls">
+      <div class="toggle-group" role="tablist" aria-label="Outlook view">
+        <button class="toggle active" data-view="temperature" role="tab" aria-selected="true">Temperature</button>
+        <button class="toggle" data-view="precipitation" role="tab" aria-selected="false">Precipitation</button>
+      </div>
+    </div>
+
+    <div class="map-wrap">
+      <svg id="map" role="img" aria-label="U.S. map showing NOAA CPC Q4 2026 probability outlook contours"></svg>
+      <div class="legend" id="legend"></div>
+    </div>
+
+    <p class="attribution">Source: NOAA Climate Prediction Center (CPC) seasonal outlook.</p>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/d3@7/dist/d3.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/topojson-client@3/dist/topojson-client.min.js"></script>
+  <script src="data.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
