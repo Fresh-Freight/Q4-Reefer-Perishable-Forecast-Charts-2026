@@ -1,0 +1,674 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Q4 Reefer Truck Availability — USDA</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet" />
+<script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
+<style>
+  :root {
+    --bg: #ffffff;
+    --bg-soft: #fafafa;
+    --ink: #1a1a1a;
+    --ink-soft: #5a5a5a;
+    --ink-muted: #9a9a9a;
+    --rule: #e5e5e5;
+    --rule-soft: #f0f0f0;
+
+    --accent: #ec7700;          /* Mango Tango */
+    --accent-dark: #8c3f00;
+    --accent-light: #fdf3e6;
+    --accent-hover: #fbe9d3;
+
+    --threshold: #5a5a5a;
+    --shortage-bg: rgba(236, 119, 0, 0.04);
+    --surplus-bg: rgba(74, 139, 44, 0.04);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: 'Open Sans', system-ui, sans-serif;
+    font-size: 14px;
+    line-height: 1.5;
+    font-variant-numeric: tabular-nums;
+    font-feature-settings: 'tnum' 1;
+  }
+  h1, h2, h3 { font-family: 'Montserrat', sans-serif; font-weight: 700; }
+
+  .wrap { max-width: 1200px; margin: 0 auto; padding: 32px 24px 48px; }
+
+  .head {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    border-bottom: 1px solid var(--rule);
+    padding-bottom: 14px;
+    margin-bottom: 20px;
+    gap: 16px;
+  }
+  .head h1 {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 20px;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    color: var(--ink);
+  }
+  .head h1 .commodity-name { font-weight: 600; }
+  .head .meta {
+    font-family: 'Open Sans', sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--ink-muted);
+  }
+
+  .controls {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    margin-bottom: 20px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--rule);
+  }
+  .ctrl-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    flex-wrap: wrap;
+  }
+  .ctrl-label {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink-muted);
+    min-width: 96px;
+    padding-top: 8px;
+  }
+  .ctrl-actions {
+    display: flex;
+    gap: 6px;
+    margin-left: auto;
+    padding-top: 4px;
+  }
+  .ctrl-btn {
+    border: 0;
+    background: transparent;
+    color: var(--ink-soft);
+    font-family: 'Open Sans', sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    cursor: pointer;
+    padding: 4px 8px;
+    border-radius: 4px;
+  }
+  .ctrl-btn:hover { background: var(--accent-hover); color: var(--accent-dark); }
+
+  .pill-row { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; flex: 1; min-width: 0; }
+  .pill {
+    border: 1px solid var(--rule);
+    background: var(--bg);
+    color: var(--ink);
+    padding: 7px 14px;
+    font-family: 'Open Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    border-radius: 8px;
+    transition: background-color 140ms ease, color 140ms ease, border-color 140ms ease;
+    white-space: nowrap;
+  }
+  .pill:hover { background: var(--accent-hover); border-color: var(--accent); }
+  .pill.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .pill {
+      transition: transform 140ms ease, background-color 140ms ease, color 140ms ease,
+                  border-color 140ms ease, box-shadow 140ms ease;
+    }
+    .pill:hover { transform: translateY(-1px); box-shadow: 0 2px 6px rgba(0,0,0,0.06); }
+    .pill:active { transform: translateY(0); box-shadow: none; }
+  }
+
+  /* "More" dropdown (commodity) */
+  .more-wrap { position: relative; display: inline-block; }
+  .more-pill { display: inline-flex; align-items: center; gap: 4px; }
+  .more-pill .chev { font-size: 10px; line-height: 1; }
+  .more-panel {
+    position: absolute;
+    top: calc(100% + 6px);
+    left: 0;
+    background: var(--bg);
+    border: 1px solid var(--rule);
+    border-radius: 8px;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.08);
+    padding: 6px;
+    min-width: 240px;
+    max-height: 340px;
+    overflow-y: auto;
+    z-index: 30;
+    display: none;
+  }
+  .more-panel.open { display: block; }
+  .more-item {
+    display: block;
+    width: 100%;
+    text-align: left;
+    padding: 7px 10px;
+    border: 0;
+    background: transparent;
+    cursor: pointer;
+    border-radius: 6px;
+    font-family: 'Open Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 400;
+    color: var(--ink);
+    white-space: nowrap;
+  }
+  .more-item:hover { background: var(--accent-hover); }
+  .more-item.active { background: var(--accent); color: #fff; font-weight: 600; }
+
+  .viz-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+    gap: 16px;
+  }
+  .viz-title {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--ink);
+    letter-spacing: 0.01em;
+  }
+  .viz-subtitle {
+    font-family: 'Open Sans', sans-serif;
+    font-size: 12px;
+    font-weight: 400;
+    color: var(--ink-muted);
+  }
+
+  .chart-area {
+    background: var(--bg);
+    border: 1px solid var(--rule);
+    border-radius: 8px;
+    padding: 18px 14px 10px;
+    position: relative;
+  }
+  .chart-svg { width: 100%; height: auto; display: block; }
+
+  /* axis text */
+  .axis-text {
+    font-family: 'Open Sans', sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    fill: var(--ink-soft);
+    font-variant-numeric: tabular-nums;
+  }
+  .axis-label {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    fill: var(--ink-muted);
+  }
+  .axis-line { stroke: var(--ink); stroke-width: 0.8; }
+  .gridline { stroke: var(--rule-soft); stroke-width: 1; shape-rendering: crispEdges; }
+
+  /* threshold line */
+  .threshold-line {
+    stroke: var(--threshold);
+    stroke-width: 1.4;
+    stroke-dasharray: 6 4;
+    fill: none;
+  }
+  .threshold-label {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    fill: var(--threshold);
+  }
+  .zone-label {
+    font-family: 'Open Sans', sans-serif;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    fill: var(--ink-muted);
+  }
+
+  /* the single average line */
+  .avg-line {
+    fill: none;
+    stroke: var(--accent);
+    stroke-width: 2.6;
+    stroke-linejoin: round;
+    stroke-linecap: round;
+  }
+  .avg-dot {
+    fill: var(--accent);
+    stroke: var(--bg);
+    stroke-width: 1.5;
+  }
+
+  /* hover */
+  .hover-line {
+    stroke: var(--ink);
+    stroke-width: 1;
+    stroke-dasharray: 3 3;
+    pointer-events: none;
+    opacity: 0;
+  }
+  .hover-line.visible { opacity: 0.5; }
+  .hover-dot {
+    fill: var(--bg);
+    stroke: var(--accent);
+    stroke-width: 2;
+    pointer-events: none;
+  }
+
+  /* tooltip */
+  .tooltip {
+    position: absolute;
+    background: var(--ink);
+    color: #fff;
+    padding: 10px 12px;
+    border-radius: 6px;
+    font-family: 'Open Sans', sans-serif;
+    font-size: 12px;
+    font-weight: 400;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 120ms;
+    z-index: 40;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.18);
+    line-height: 1.45;
+    font-variant-numeric: tabular-nums;
+    max-width: 240px;
+  }
+  .tooltip strong {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    display: block;
+    margin-bottom: 4px;
+  }
+  .tt-week-date { font-size: 11px; color: #d9d9d9; margin-bottom: 6px; }
+  .tt-score-big {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--accent);
+    line-height: 1.1;
+    margin-bottom: 2px;
+  }
+  .tt-label { font-size: 11.5px; color: #f8c785; font-weight: 600; }
+  .tt-meta { font-size: 10.5px; color: #b0b0b0; margin-top: 6px; padding-top: 6px; border-top: 1px solid rgba(255,255,255,0.16); }
+
+  .source {
+    margin-top: 16px;
+    font-family: 'Open Sans', sans-serif;
+    font-size: 11px;
+    color: var(--ink-muted);
+    text-align: right;
+  }
+
+  @media print {
+    .controls .ctrl-actions { display: none; }
+    body { background: white; }
+  }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+  <div class="head">
+    <h1>Q4 Reefer Truck Availability</h1>
+    <div class="meta">{{ year_range }} 4-yr weekly avg · {{ build_date }}</div>
+  </div>
+
+  <div class="controls">
+    <div class="ctrl-row">
+      <label class="ctrl-label">Regions</label>
+      <div class="pill-row" id="regionPills"></div>
+      <div class="ctrl-actions">
+        <button class="ctrl-btn" id="regionsAll">All</button>
+        <button class="ctrl-btn" id="regionsNone">None</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="viz-header">
+    <div>
+      <div class="viz-title">Weekly average availability across selected regions</div>
+      <div class="viz-subtitle">1 = Surplus · 3 = Adequate (threshold) · 5 = Shortage · weighted by lane-week reports</div>
+    </div>
+    <div class="viz-subtitle" id="regionsSummary"></div>
+  </div>
+
+  <div class="chart-area">
+    <svg class="chart-svg" id="chartSvg" viewBox="0 0 960 480" preserveAspectRatio="xMidYMid meet"></svg>
+    <div class="tooltip" id="tooltip"></div>
+  </div>
+
+  <div class="source">Source: USDA AMS Refrigerated Truck Rates and Availability · agtransport.usda.gov/acar-e3r8 · scale: 1=Surplus, 2=Slight Surplus, 3=Adequate, 4=Slight Shortage, 5=Shortage</div>
+</div>
+
+<script>
+  // ═══════════════════════════════════════════════════════════════
+  // INJECTED DATA
+  // ═══════════════════════════════════════════════════════════════
+  const AVAILABILITY = {{ availability_json | safe }};   // {commodity: {region: {week: {score,n}}}}
+  const REGIONS = {{ regions_json | safe }};
+  const WEEKS = {{ weeks_json | safe }};                  // [{w, label, t}]
+
+  const ALL_COMMODITIES_KEY = "All Commodities";
+  const SCORE_LABELS = {
+    1: "Surplus", 2: "Slight Surplus", 3: "Adequate",
+    4: "Slight Shortage", 5: "Shortage",
+  };
+  const THRESHOLD = 3;
+
+  // ═══════════════════════════════════════════════════════════════
+  // STATE
+  // ═══════════════════════════════════════════════════════════════
+  // Mexico crossings default OFF for a cleaner US-shipping-region average.
+  let activeRegions = new Set(REGIONS.filter(r => !r.startsWith("Mexico-")));
+
+  // ═══════════════════════════════════════════════════════════════
+  // REGION SELECTOR (multi-select; scopes which regions feed the average)
+  // ═══════════════════════════════════════════════════════════════
+  function renderRegionPills() {
+    const el = document.getElementById("regionPills");
+    // US regions alpha, then Mexico crossings.
+    const ordered = REGIONS.slice().sort((a, b) => {
+      const ax = a.startsWith("Mexico-") ? 1 : 0;
+      const bx = b.startsWith("Mexico-") ? 1 : 0;
+      if (ax !== bx) return ax - bx;
+      return a.localeCompare(b);
+    });
+    el.innerHTML = ordered.map(r => {
+      const active = activeRegions.has(r);
+      return `<button class="pill ${active ? 'active' : ''}" data-r="${r}">${r}</button>`;
+    }).join("");
+    el.querySelectorAll(".pill[data-r]").forEach(b => {
+      b.addEventListener("click", () => {
+        const r = b.dataset.r;
+        if (activeRegions.has(r)) activeRegions.delete(r);
+        else activeRegions.add(r);
+        renderRegionPills();
+        renderChart();
+      });
+    });
+  }
+
+  document.getElementById("regionsAll").addEventListener("click", () => {
+    activeRegions = new Set(REGIONS);
+    renderRegionPills();
+    renderChart();
+  });
+  document.getElementById("regionsNone").addEventListener("click", () => {
+    activeRegions = new Set();
+    renderRegionPills();
+    renderChart();
+  });
+
+  // ═══════════════════════════════════════════════════════════════
+  // AGGREGATION — weighted mean across selected regions per week
+  // ═══════════════════════════════════════════════════════════════
+  function aggregateWeekly() {
+    // For each week in WEEKS, walk every active region's cell and accumulate
+    //   sum  += score * n     // n weights the regional mean
+    //   total_n += n
+    //   regions_contributing += 1 if it had data this week
+    // Then avg = sum / total_n.
+    const commodityData = AVAILABILITY[ALL_COMMODITIES_KEY] || {};
+    const series = WEEKS.map(wk => {
+      let sum = 0, totalN = 0, regionsHit = 0;
+      activeRegions.forEach(region => {
+        const cell = (commodityData[region] || {})[String(wk.w)];
+        if (!cell || cell.n == null || cell.n <= 0) return;
+        sum += cell.score * cell.n;
+        totalN += cell.n;
+        regionsHit += 1;
+      });
+      if (totalN === 0) return { w: wk.w, label: wk.label, score: null, n: 0, regions: 0 };
+      return { w: wk.w, label: wk.label, score: sum / totalN, n: totalN, regions: regionsHit };
+    });
+    return series;
+  }
+
+  // ═══════════════════════════════════════════════════════════════
+  // CHART
+  // ═══════════════════════════════════════════════════════════════
+  const svgEl = document.getElementById("chartSvg");
+  const tooltip = document.getElementById("tooltip");
+  const chartArea = document.querySelector(".chart-area");
+
+  const W = 960, H = 480;
+  const M = { top: 24, right: 110, bottom: 64, left: 56 };
+  const innerW = W - M.left - M.right;
+  const innerH = H - M.top - M.bottom;
+
+  function renderChart() {
+    // Region summary line above the chart
+    const summary = activeRegions.size === 0
+      ? "no regions selected"
+      : activeRegions.size === REGIONS.length
+        ? `averaging all ${activeRegions.size} regions`
+        : `averaging ${activeRegions.size} of ${REGIONS.length} regions`;
+    document.getElementById("regionsSummary").textContent = summary;
+
+    const svg = d3.select(svgEl);
+    svg.selectAll("*").remove();
+
+    const x = d3.scaleLinear()
+      .domain([0, Math.max(WEEKS.length - 1, 1)])
+      .range([0, innerW]);
+    const y = d3.scaleLinear()
+      .domain([1, 5])
+      .range([innerH, 0]);
+
+    const g = svg.append("g").attr("transform", `translate(${M.left},${M.top})`);
+
+    // Zone tints
+    g.append("rect")
+      .attr("x", 0).attr("y", 0)
+      .attr("width", innerW).attr("height", y(THRESHOLD))
+      .attr("fill", "var(--shortage-bg)");
+    g.append("rect")
+      .attr("x", 0).attr("y", y(THRESHOLD))
+      .attr("width", innerW).attr("height", innerH - y(THRESHOLD))
+      .attr("fill", "var(--surplus-bg)");
+
+    // Horizontal gridlines at every integer score
+    [1, 2, 3, 4, 5].forEach(v => {
+      g.append("line")
+        .attr("class", "gridline")
+        .attr("x1", 0).attr("x2", innerW)
+        .attr("y1", y(v)).attr("y2", y(v));
+    });
+
+    // Y axis: integer score ticks only — the ordinal labels (Surplus, Adequate,
+    // Shortage) already live in the subtitle, no need to repeat them here.
+    [1, 2, 3, 4, 5].forEach(v => {
+      g.append("text")
+        .attr("class", "axis-text")
+        .attr("x", -10).attr("y", y(v))
+        .attr("text-anchor", "end")
+        .attr("dominant-baseline", "central")
+        .text(v);
+    });
+
+    // X axis — week numbers (e.g. "Wk 27"), with the date label as a small
+    // secondary line under each tick so customers reading the chart still see
+    // when in Q4 a given week sits.
+    WEEKS.forEach((wk, i) => {
+      g.append("line")
+        .attr("class", "gridline")
+        .attr("x1", x(i)).attr("x2", x(i))
+        .attr("y1", 0).attr("y2", innerH)
+        .attr("opacity", 0.4);
+      g.append("text")
+        .attr("class", "axis-text")
+        .attr("x", x(i)).attr("y", innerH + 18)
+        .attr("text-anchor", "middle")
+        .text(`Wk ${wk.w}`);
+      g.append("text")
+        .attr("class", "axis-label")
+        .attr("x", x(i)).attr("y", innerH + 34)
+        .attr("text-anchor", "middle")
+        .text(wk.label);
+    });
+
+    // Axis lines
+    g.append("line").attr("class", "axis-line")
+      .attr("x1", 0).attr("x2", innerW).attr("y1", innerH).attr("y2", innerH);
+    g.append("line").attr("class", "axis-line")
+      .attr("x1", 0).attr("x2", 0).attr("y1", 0).attr("y2", innerH);
+
+    // Threshold line at y=3 + side labels
+    g.append("line")
+      .attr("class", "threshold-line")
+      .attr("x1", 0).attr("x2", innerW)
+      .attr("y1", y(THRESHOLD)).attr("y2", y(THRESHOLD));
+    g.append("text")
+      .attr("class", "threshold-label")
+      .attr("x", innerW + 8).attr("y", y(THRESHOLD))
+      .attr("dominant-baseline", "central")
+      .text("Adequate (3)");
+    g.append("text")
+      .attr("class", "zone-label")
+      .attr("x", innerW + 8).attr("y", y(THRESHOLD) - 14)
+      .attr("dominant-baseline", "central")
+      .text("↑ Shortage");
+    g.append("text")
+      .attr("class", "zone-label")
+      .attr("x", innerW + 8).attr("y", y(THRESHOLD) + 16)
+      .attr("dominant-baseline", "central")
+      .text("↓ Surplus");
+
+    // Compute the weighted-average series
+    const series = aggregateWeekly();
+    const hasAny = series.some(p => p.score != null);
+    if (!hasAny) {
+      g.append("text")
+        .attr("class", "axis-text")
+        .attr("x", innerW / 2).attr("y", innerH / 2)
+        .attr("text-anchor", "middle")
+        .attr("fill", "var(--ink-muted)")
+        .text(activeRegions.size === 0
+          ? "Select one or more regions above to see the average."
+          : "No availability data for the current commodity × region selection.");
+      return;
+    }
+
+    const indexByWeek = new Map(WEEKS.map((wk, i) => [wk.w, i]));
+    const pts = series
+      .map(p => ({ ...p, i: indexByWeek.get(p.w) }))
+      .filter(p => p.score != null);
+
+    const line = d3.line()
+      .x(d => x(d.i))
+      .y(d => y(d.score));
+    g.append("path")
+      .attr("class", "avg-line")
+      .attr("d", line(pts));
+
+    g.append("g").attr("class", "avg-dots")
+      .selectAll("circle")
+      .data(pts).enter()
+      .append("circle")
+        .attr("class", "avg-dot")
+        .attr("cx", d => x(d.i))
+        .attr("cy", d => y(d.score))
+        .attr("r", 3.2);
+
+    // Hover overlay — vertical guide line + tooltip
+    const hoverLine = g.append("line")
+      .attr("class", "hover-line")
+      .attr("y1", 0).attr("y2", innerH);
+    const hoverDot = g.append("circle")
+      .attr("class", "hover-dot")
+      .attr("r", 5)
+      .style("opacity", 0);
+
+    const overlay = g.append("rect")
+      .attr("x", 0).attr("y", 0)
+      .attr("width", innerW).attr("height", innerH)
+      .attr("fill", "transparent")
+      .style("cursor", "crosshair");
+
+    overlay.on("pointerleave", () => {
+      hoverLine.classed("visible", false);
+      hoverDot.style("opacity", 0);
+      tooltip.style.opacity = "0";
+    });
+
+    overlay.on("pointermove", function(event) {
+      const [mx] = d3.pointer(event, this);
+      const iFloat = x.invert(mx);
+      const iSnap = Math.max(0, Math.min(WEEKS.length - 1, Math.round(iFloat)));
+      const snapX = x(iSnap);
+      const point = series[iSnap];
+
+      hoverLine.attr("x1", snapX).attr("x2", snapX).classed("visible", true);
+
+      if (point.score != null) {
+        hoverDot
+          .attr("cx", snapX)
+          .attr("cy", y(point.score))
+          .style("opacity", 1);
+        const label = SCORE_LABELS[Math.max(1, Math.min(5, Math.round(point.score)))];
+        tooltip.innerHTML =
+          `<strong>Week ${point.w}</strong>
+           <div class="tt-week-date">week of ${point.label}</div>
+           <div class="tt-score-big">${point.score.toFixed(2)}</div>
+           <div class="tt-label">${label}</div>
+           <div class="tt-meta">${point.regions} region${point.regions === 1 ? '' : 's'} · ${point.n.toLocaleString()} report${point.n === 1 ? '' : 's'}</div>`;
+      } else {
+        hoverDot.style("opacity", 0);
+        tooltip.innerHTML =
+          `<strong>Week ${WEEKS[iSnap].w}</strong>
+           <div class="tt-week-date">week of ${WEEKS[iSnap].label}</div>
+           <div class="tt-label" style="color:#d9d9d9">No data for this selection</div>`;
+      }
+
+      const areaRect = chartArea.getBoundingClientRect();
+      const px = event.clientX - areaRect.left;
+      const py = event.clientY - areaRect.top;
+      const ttRect = tooltip.getBoundingClientRect();
+      const tw = ttRect.width || 200;
+      const th = ttRect.height || 100;
+      let left = px + 16;
+      let top = py - th / 2;
+      if (left + tw > areaRect.width - 8) left = px - tw - 16;
+      if (top < 8) top = 8;
+      if (top + th > areaRect.height - 8) top = areaRect.height - th - 8;
+      tooltip.style.left = left + "px";
+      tooltip.style.top = top + "px";
+      tooltip.style.opacity = "1";
+    });
+  }
+
+  // ═══════════════════════════════════════════════════════════════
+  // INIT
+  // ═══════════════════════════════════════════════════════════════
+  (function init() {
+    renderRegionPills();
+    renderChart();
+  })();
+</script>
+</body>
+</html>
