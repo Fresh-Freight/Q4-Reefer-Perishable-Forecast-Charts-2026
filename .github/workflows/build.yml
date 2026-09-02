@@ -66,6 +66,41 @@ jobs:
           cp -r charts/christmas-tree-map/data docs/christmas-tree-map/data
 
       # ─────────────────────────────────────────────────────────────
+      # usda-truck-availability  (USDA AMS Socrata — public data)
+      # ─────────────────────────────────────────────────────────────
+      - name: Install deps — usda-truck-availability
+        run: pip install -r charts/usda-truck-availability/requirements.txt
+
+      - name: Build — usda-truck-availability
+        # Fetches + renders in one step. DATA_SOURCE=api is the script default;
+        # set explicitly so the intent is visible here.
+        env:
+          SOCRATA_APP_TOKEN: ${{ secrets.SOCRATA_APP_TOKEN }}
+          DATA_SOURCE: api
+        run: python charts/usda-truck-availability/scripts/build_chart.py
+
+      - name: Stage — usda-truck-availability
+        run: |
+          mkdir -p docs/usda-truck-availability
+          cp charts/usda-truck-availability/docs/index.html docs/usda-truck-availability/index.html
+
+      # ─────────────────────────────────────────────────────────────
+      # reefer-rates  (static; DAT RateView figures entered by hand)
+      # ─────────────────────────────────────────────────────────────
+      - name: Stage — reefer-rates
+        run: |
+          mkdir -p docs/reefer-rates
+          cp charts/reefer-rates/index.html docs/reefer-rates/index.html
+
+      # ─────────────────────────────────────────────────────────────
+      # reefer-load-to-truck-ratio  (static; DAT Trendlines, by hand)
+      # ─────────────────────────────────────────────────────────────
+      - name: Stage — reefer-load-to-truck-ratio
+        run: |
+          mkdir -p docs/reefer-load-to-truck-ratio
+          cp charts/reefer-load-to-truck-ratio/index.html docs/reefer-load-to-truck-ratio/index.html
+
+      # ─────────────────────────────────────────────────────────────
       # Landing page
       # ─────────────────────────────────────────────────────────────
       - name: Stage landing page

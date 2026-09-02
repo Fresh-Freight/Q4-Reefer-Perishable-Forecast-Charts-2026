@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Reefer Rates</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700&family=Open+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation@3.1.0/dist/chartjs-plugin-annotation.min.js"></script>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Open Sans', sans-serif;
+    background: transparent;
+    color: #1a1a1a;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .container {
+    max-width: 1060px;
+    margin: 0 auto;
+    background: #fff;
+    border-radius: 10px;
+    padding: 24px 28px 20px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06), 0 8px 24px rgba(0,0,0,0.04);
+  }
+
+  .header-row {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    margin-bottom: 4px;
+  }
+
+  h1 {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 700;
+    font-size: 24px;
+    color: #1a1a1a;
+  }
+
+  .subtitle {
+    font-size: 13px;
+    color: #888;
+    padding-bottom: 10px;
+    margin-bottom: 14px;
+    border-bottom: 1px solid #eef0f2;
+  }
+
+  .legend-row {
+    display: flex;
+    gap: 20px;
+    margin-bottom: 12px;
+  }
+
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    color: #777;
+    font-family: 'Open Sans', sans-serif;
+  }
+
+  .legend-swatch {
+    width: 24px;
+    height: 3px;
+    border-radius: 2px;
+  }
+
+  .chart-wrap {
+    position: relative;
+    width: 100%;
+    height: 320px;
+  }
+
+  .caption {
+    margin-top: 12px;
+    font-size: 12px;
+    color: #888;
+    line-height: 1.5;
+  }
+
+  .source {
+    margin-top: 8px;
+    padding-top: 10px;
+    border-top: 1px solid #eef0f2;
+    font-size: 11px;
+    color: #aaa;
+  }
+
+  /* ── Mobile ── */
+  @media (max-width: 640px) {
+    .container { padding: 16px 14px 14px; border-radius: 0; }
+    h1 { font-size: 18px; }
+    .subtitle { font-size: 12px; }
+    .header-row { flex-direction: column; gap: 2px; }
+    .legend-row { gap: 14px; }
+    .legend-item { font-size: 11px; }
+    .chart-wrap { height: 260px; }
+    .caption { font-size: 11px; }
+    .source { font-size: 10px; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="header-row">
+    <h1>Reefer Rates</h1>
+  </div>
+  <div class="subtitle">National average rates per mile (incl. fuel surcharges) &mdash; trailing 13 months</div>
+
+  <div class="legend-row">
+    <div class="legend-item">
+      <span class="legend-swatch" style="background: #4a8b2c;"></span> Spot Rates
+    </div>
+    <div class="legend-item">
+      <span class="legend-swatch" style="background: #ec7700;"></span> Contract Rates
+    </div>
+  </div>
+
+  <div class="chart-wrap">
+    <canvas id="ratesChart"></canvas>
+  </div>
+
+  <div class="source">Source: DAT Freight &amp; Analytics (RateView). National average rates including fuel surcharges.</div>
+</div>
+
+<script>
+// ---------------------------------------------------------------------------
+// THE ONLY BLOCK TO EDIT WHEN REFRESHING FROM DAT.
+//
+// This is a rolling window: it must end at DAT's most recent *closed* month at
+// publication, not at a fixed month. To roll it forward, set FIRST_MONTH to the
+// new starting month and paste the two series. Axis labels and tooltip labels
+// are both derived from FIRST_MONTH, so there is nothing else to keep in sync.
+//
+// Both series must have the same length. Values are national average $/mile
+// including fuel surcharge (DAT RateView).
+// ---------------------------------------------------------------------------
+const FIRST_MONTH = { year: 2025, month: 9 };   // month is 1-12; 9 = September
+
+// Pulled from DAT Trendlines National Reefer Rates, 2026-09-02. DAT's own
+// chart is a rolling 13 months, which is what this window mirrors.
+// NOTE: the final point (Sep 2026) is an open month and will be revised. When
+// the Q3 report pulled this series in June, its last two months later moved by
+// a cent each. Re-pull before publication and update the tail.
+const spotData     = [2.44, 2.49, 2.54, 2.71, 2.81, 2.87, 2.98, 3.12, 3.36, 3.40, 3.41, 3.38, 3.43];
+const contractData = [2.77, 2.77, 2.81, 2.79, 2.81, 2.88, 3.10, 3.22, 3.29, 3.25, 3.29, 3.42, 3.61];
+
+const Y_MIN = 2.00, Y_MAX = 4.00;   // must match the y scale config below
+
+// --- derived; no need to touch below -------------------------------------
+if (spotData.length !== contractData.length) {
+  console.error(
+    'Reefer rates: spotData has ' + spotData.length + ' points but contractData has ' +
+    contractData.length + '. The series must be the same length or the chart will ' +
+    'silently misalign months.'
+  );
+}
+
+// Chart.js clips points outside a fixed axis range without complaining, so
+// check the range covers the data rather than finding out visually.
+(function () {
+  var all = spotData.concat(contractData).filter(function (v) { return v !== null; });
+  var lo = Math.min.apply(null, all), hi = Math.max.apply(null, all);
+  if (hi > Y_MAX || lo < Y_MIN) {
+    console.error(
+      'Reefer rates: data spans ' + lo.toFixed(2) + '-' + hi.toFixed(2) +
+      ' but the y axis is fixed at ' + Y_MIN.toFixed(2) + '-' + Y_MAX.toFixed(2) +
+      '. Points outside that range are drawn clipped. Widen the y scale.'
+    );
+  }
+})();
+
+const SHORT_NAMES = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];const LONG_NAMES  = ['January','February','March','April','May','June',
+                     'July','August','September','October','November','December'];
+
+// Walks forward from FIRST_MONTH once and builds both label sets together, so
+// the axis and the tooltip can never disagree about which month a point is.
+function buildLabels(count) {
+  const short = [], long = [];
+  let y = FIRST_MONTH.year, m = FIRST_MONTH.month - 1;   // m is 0-11
+  for (let i = 0; i < count; i++) {
+    const yy = String(y).slice(-2);
+    // Year tag on the first point and every January, so the window's span is
+    // readable without crowding every label.
+    short.push(i === 0 || m === 0 ? SHORT_NAMES[m] + " '" + yy : SHORT_NAMES[m]);
+    long.push(LONG_NAMES[m] + ' ' + y);
+    if (++m > 11) { m = 0; y++; }
+  }
+  // Tag the final point too, so both ends of the window are dated.
+  if (count > 1 && !short[count - 1].includes("'")) {
+    short[count - 1] += " '" + String(y).slice(-2);
+  }
+  return { short, long };
+}
+
+const LABELS = buildLabels(spotData.length);
+const MONTHS = LABELS.short;
+
+const ctx = document.getElementById('ratesChart').getContext('2d');
+
+const sharedPointStyle = {
+  pointRadius: 4,
+  pointHoverRadius: 6,
+  pointBorderWidth: 2,
+  pointHoverBorderWidth: 2,
+  borderWidth: 2.5,
+  tension: 0,
+  fill: false,
+};
+
+new Chart(ctx, {
+  type: 'line',
+  data: {
+    labels: MONTHS,
+    datasets: [
+      {
+        label: 'Spot Rates',
+        data: spotData,
+        borderColor: '#4a8b2c',
+        backgroundColor: '#4a8b2c',
+        pointBackgroundColor: '#fff',
+        pointBorderColor: '#4a8b2c',
+        ...sharedPointStyle,
+      },
+      {
+        label: 'Contract Rates',
+        data: contractData,
+        borderColor: '#ec7700',
+        backgroundColor: '#ec7700',
+        pointBackgroundColor: '#fff',
+        pointBorderColor: '#ec7700',
+        ...sharedPointStyle,
+      },
+    ],
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    interaction: {
+      mode: 'index',
+      intersect: false,
+    },
+    plugins: {
+      legend: { display: false },
+      tooltip: {
+        backgroundColor: '#fff',
+        titleColor: '#1a1a1a',
+        bodyColor: '#1a1a1a',
+        borderColor: '#eef0f2',
+        borderWidth: 1,
+        cornerRadius: 8,
+        padding: 12,
+        boxPadding: 4,
+        titleFont: { family: 'Open Sans', size: 12, weight: '600' },
+        bodyFont: { family: 'Open Sans', size: 13, weight: '500' },
+        callbacks: {
+          title: function(items) {
+            return LABELS.long[items[0].dataIndex];
+          },
+          label: function(item) {
+            return item.dataset.label + ': $' + item.raw.toFixed(2);
+          },
+        },
+      },
+      annotation: {
+        annotations: {
+          crossover: {
+            type: 'line',
+            xMin: 7,
+            xMax: 7,
+            borderColor: '#eef0f2',
+            borderWidth: 1,
+            borderDash: [4, 4],
+            label: {
+              display: true,
+              content: 'Crossover',
+              position: 'start',
+              font: { family: 'Open Sans', size: 10, weight: '500' },
+              color: '#aaa',
+              backgroundColor: 'rgba(255,255,255,0.9)',
+              padding: 4,
+            },
+          },
+        },
+      },
+    },
+    scales: {
+      x: {
+        grid: { display: false },
+        border: { display: false },
+        ticks: {
+          font: { family: 'Open Sans', size: 11, weight: '500' },
+          color: '#aaa',
+        },
+      },
+      y: {
+        // Bounds are fixed rather than auto-scaled so the gridlines stay put
+        // between refreshes. They must still clear the data: the Q3 window
+        // peaked at 3.41 and a 3.50 ceiling was fine, but this window reaches
+        // 3.61, which would have been clipped off the top with no warning.
+        // If a future refresh exceeds max, Chart.js draws the point outside
+        // the plot area instead of erroring — so check this when pasting.
+        min: 2.00,
+        max: 4.00,
+        ticks: {
+          stepSize: 0.50,
+          font: { family: 'Open Sans', size: 11, weight: '500' },
+          color: '#aaa',
+          callback: function(value) {
+            return '$' + value.toFixed(2);
+          },
+        },
+        grid: {
+          color: '#f0f0f0',
+          drawBorder: false,
+        },
+        border: { display: false },
+      },
+    },
+  },
+});
+</script>
+</body>
+</html>

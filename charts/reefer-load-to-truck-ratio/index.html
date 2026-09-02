@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Reefer Load-to-Truck Ratio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700&family=Open+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Open Sans', sans-serif;
+    background: transparent;
+    color: #1a1a1a;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .container {
+    max-width: 1060px;
+    margin: 0 auto;
+    background: #fff;
+    border-radius: 10px;
+    padding: 24px 28px 20px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06), 0 8px 24px rgba(0,0,0,0.04);
+  }
+
+  .header-row {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    margin-bottom: 4px;
+  }
+
+  h1 {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 700;
+    font-size: 24px;
+    color: #1a1a1a;
+  }
+
+  .subtitle {
+    font-size: 13px;
+    color: #888;
+    padding-bottom: 10px;
+    margin-bottom: 14px;
+    border-bottom: 1px solid #eef0f2;
+  }
+
+  .legend-row {
+    display: flex;
+    gap: 20px;
+    margin-bottom: 12px;
+  }
+
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    color: #777;
+    font-family: 'Open Sans', sans-serif;
+  }
+
+  .legend-swatch {
+    width: 24px;
+    height: 3px;
+    border-radius: 2px;
+  }
+
+  .chart-wrap {
+    position: relative;
+    width: 100%;
+    height: 320px;
+  }
+
+  .source {
+    margin-top: 12px;
+    padding-top: 10px;
+    border-top: 1px solid #eef0f2;
+    font-size: 11px;
+    color: #aaa;
+  }
+
+  .source a {
+    color: #aaa;
+    text-decoration: none;
+  }
+
+  .source a:hover {
+    text-decoration: underline;
+  }
+
+  /* ── Mobile ── */
+  @media (max-width: 640px) {
+    .container { padding: 16px 14px 14px; border-radius: 0; }
+    h1 { font-size: 18px; }
+    .subtitle { font-size: 12px; }
+    .header-row { flex-direction: column; gap: 2px; }
+    .legend-row { gap: 14px; }
+    .legend-item { font-size: 11px; }
+    .chart-wrap { height: 260px; }
+    .source { font-size: 10px; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="header-row">
+    <h1>Reefer Load-to-Truck Ratio</h1>
+  </div>
+  <div class="subtitle">Monthly national reefer load-to-truck ratio &mdash; higher values indicate tighter capacity</div>
+
+  <div class="legend-row">
+    <div class="legend-item">
+      <span class="legend-swatch" style="background: #4a8b2c;"></span> 2024
+    </div>
+    <div class="legend-item">
+      <span class="legend-swatch" style="background: #ec7700;"></span> 2025
+    </div>
+    <div class="legend-item">
+      <span class="legend-swatch" style="background: #1a1a1a;"></span> 2026
+    </div>
+  </div>
+
+  <div class="chart-wrap">
+    <canvas id="ratioChart"></canvas>
+  </div>
+
+  <div class="source">Source: DAT Freight &amp; Analytics</div>
+</div>
+
+<script>
+const MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+
+// ---------------------------------------------------------------------------
+// THE ONLY BLOCK TO EDIT WHEN REFRESHING FROM DAT.
+//
+// Fixed Jan-Dec axis, one series per year. Each array MUST stay 12 long: fill
+// months DAT has not closed yet with null, do not shorten the array. Chart.js
+// skips nulls, so a short array would quietly slide later months onto the wrong
+// position on the axis instead of leaving a gap.
+//
+// To refresh: replace the nulls in the current-year series with real values,
+// left to right, one per closed month.
+// ---------------------------------------------------------------------------
+// Pulled from DAT Trendlines Reefer Demand & Capacity, 2026-09-02. All 24
+// values across 2024 and 2025, plus Jan-May 2026, re-read identical to the
+// previous pull; Jun-Aug 2026 are new. Sep 2026 onward is not yet plotted by
+// DAT (the current-year line ends at the last closed month), so it stays null.
+const data2024 = [8.16, 4.45, 4.83, 4.78, 6.28, 7.03, 6.40, 5.95, 5.01, 5.85, 5.82, 8.76];
+const data2025 = [11.38, 7.83, 7.12, 8.29, 10.67, 10.30, 11.80, 10.36, 10.95, 11.29, 10.88, 16.72];
+const data2026 = [18.08, 17.23, 17.48, 13.47, 20.39, 19.97, 19.21, 20.02, null, null, null, null];
+
+const Y_MIN = 0, Y_MAX = 22;   // must match the y scale config below
+
+// --- derived; no need to touch below -------------------------------------
+[['2024', data2024], ['2025', data2025], ['2026', data2026]].forEach(function (pair) {
+  if (pair[1].length !== MONTHS.length) {
+    console.error(
+      'Load-to-truck: data' + pair[0] + ' has ' + pair[1].length + ' points, expected ' +
+      MONTHS.length + '. Pad unclosed months with null rather than shortening the array.'
+    );
+  }
+});
+
+// Chart.js clips points outside a fixed axis range without complaining. 2026 is
+// already running near the ceiling (20.39 against a max of 22), so a strong Q4
+// could overflow it — check rather than find out visually.
+(function () {
+  var all = data2024.concat(data2025, data2026).filter(function (v) { return v !== null; });
+  var lo = Math.min.apply(null, all), hi = Math.max.apply(null, all);
+  if (hi > Y_MAX || lo < Y_MIN) {
+    console.error(
+      'Load-to-truck: data spans ' + lo + '-' + hi + ' but the y axis is fixed at ' +
+      Y_MIN + '-' + Y_MAX + '. Points outside that range are drawn clipped. Widen the y scale.'
+    );
+  }
+})();
+
+const ctx = document.getElementById('ratioChart').getContext('2d');
+
+const sharedPointStyle = {
+  pointRadius: 4,
+  pointHoverRadius: 6,
+  pointBorderWidth: 2,
+  pointHoverBorderWidth: 2,
+  borderWidth: 2.5,
+  tension: 0,
+  spanGaps: false,
+};
+
+new Chart(ctx, {
+  type: 'line',
+  data: {
+    labels: MONTHS,
+    datasets: [
+      {
+        label: '2024',
+        data: data2024,
+        borderColor: '#4a8b2c',
+        backgroundColor: '#4a8b2c',
+        pointBackgroundColor: '#fff',
+        pointBorderColor: '#4a8b2c',
+        ...sharedPointStyle,
+      },
+      {
+        label: '2025',
+        data: data2025,
+        borderColor: '#ec7700',
+        backgroundColor: '#ec7700',
+        pointBackgroundColor: '#fff',
+        pointBorderColor: '#ec7700',
+        ...sharedPointStyle,
+      },
+      {
+        label: '2026',
+        data: data2026,
+        borderColor: '#1a1a1a',
+        backgroundColor: '#1a1a1a',
+        pointBackgroundColor: '#fff',
+        pointBorderColor: '#1a1a1a',
+        ...sharedPointStyle,
+      },
+    ],
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    interaction: {
+      mode: 'index',
+      intersect: false,
+    },
+    plugins: {
+      legend: { display: false },
+      tooltip: {
+        backgroundColor: '#fff',
+        titleColor: '#1a1a1a',
+        bodyColor: '#1a1a1a',
+        borderColor: '#eef0f2',
+        borderWidth: 1,
+        cornerRadius: 8,
+        padding: 12,
+        boxPadding: 4,
+        titleFont: { family: 'Open Sans', size: 12, weight: '600' },
+        bodyFont: { family: 'Open Sans', size: 13, weight: '500' },
+        callbacks: {
+          title: function(items) {
+            return items[0].label + ' ' + items[0].dataset.label.slice(-4);
+          },
+          label: function(item) {
+            if (item.raw === null) return null;
+            return item.dataset.label + ': ' + item.raw.toFixed(2);
+          },
+        },
+        filter: function(item) {
+          return item.raw !== null;
+        },
+      },
+    },
+    scales: {
+      x: {
+        grid: { display: false },
+        border: { display: false },
+        ticks: {
+          font: { family: 'Open Sans', size: 11, weight: '500' },
+          color: '#aaa',
+        },
+      },
+      y: {
+        min: 0,
+        max: 22,
+        ticks: {
+          stepSize: 2,
+          font: { family: 'Open Sans', size: 11, weight: '500' },
+          color: '#aaa',
+          callback: function(value) { return value; },
+        },
+        grid: {
+          color: '#f0f0f0',
+          drawBorder: false,
+        },
+        border: { display: false },
+      },
+    },
+  },
+});
+</script>
+</body>
+</html>

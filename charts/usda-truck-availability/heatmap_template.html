@@ -1,0 +1,1112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Q4 Reefer Truck Availability by Region — USDA Heat Map</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet" />
+<script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
+<script src="https://cdn.jsdelivr.net/npm/topojson-client@3"></script>
+<style>
+  :root {
+    --bg: #ffffff;
+    --ink: #040702;
+    --ink-soft: #4f514d;
+    --ink-muted: #818380;
+    --rule: #e8eae7;
+
+    --green: #4a8b2c;
+    --orange: #ec7700;
+
+    --no-data: #f2f2f2;
+    --mexico-fill: #f2f2f2;
+
+    /* Diverging availability ramp. Availability is a 1-5 index whose meaning
+       is its DIRECTION from 3 ("adequate"), not its magnitude, so the scale is
+       two brand hues off a neutral gray midpoint: green = surplus capacity,
+       orange = shortage. Lightness runs monotonically from each pole into the
+       middle so the two arms read at equal strength.
+
+       Two things are tuned to how Q4 actually reads. The cuts cluster tightly
+       around 3 because Q4 districts sit far closer to "adequate" than Q3 ones
+       do; even-width bands across the full 1-5 scale left almost every state in
+       one of three shades and the map looked frozen when you changed year. And
+       each step is at least 8 points of L* from its neighbour, so a band change
+       is actually visible: the earlier ramp stepped 1.3 L* across the busiest
+       boundary, which no one can see.
+
+       The cuts are fixed rather than fitted to the current selection, so a
+       color means the same thing in every year and month. Readings past the end
+       cuts clamp to the end colors. */
+    --sur-4: #1d4a0f;   /* <  2.2     deep surplus    */
+    --sur-3: #3a7522;   /* 2.2 - 2.6  surplus         */
+    --sur-2: #5f9e3a;   /* 2.6 - 2.8  looser          */
+    --sur-1: #96c977;   /* 2.8 - 2.95 slightly loose  */
+    --mid-0: #dcdedb;   /* 2.95 - 3.05 adequate       */
+    --short-1: #eeb265; /* 3.05 - 3.2 slightly tight  */
+    --short-2: #ef9f44; /* 3.2 - 3.4  tight           */
+    --short-3: #d97400; /* 3.4 - 3.8  shortage        */
+    --short-4: #94480a; /* >= 3.8     severe shortage */
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body {
+    background: transparent;
+    color: var(--ink);
+    font-family: 'Open Sans', Arial, Helvetica, sans-serif;
+    font-size: 14px;
+    line-height: 1.5;
+    font-variant-numeric: tabular-nums;
+    font-feature-settings: 'tnum' 1;
+  }
+  h1 { font-family: 'Montserrat', Arial, sans-serif; font-weight: 700; }
+
+  .wrap { max-width: 1060px; margin: 0 auto; padding: 0; }
+  .card {
+    background: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 1px 3px rgba(4,7,2,0.06), 0 8px 24px rgba(4,7,2,0.04);
+    padding: 24px 28px 20px;
+  }
+
+  /* header */
+  .head {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    border-bottom: 1px solid var(--rule);
+    padding-bottom: 10px;
+    margin-bottom: 14px;
+    gap: 16px;
+  }
+  .head h1 {
+    font-size: 24px;
+    letter-spacing: -0.01em;
+    color: var(--ink);
+  }
+  .head h1 .period { font-weight: 600; }
+  .head .sub {
+    font-size: 12.5px;
+    color: var(--ink-soft);
+    margin-top: 3px;
+  }
+  .head .meta {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--ink-muted);
+    white-space: nowrap;
+  }
+
+  /* controls */
+  .controls {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 10px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--rule);
+  }
+  .ctrl-row { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+  .pill-row { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+  .pill {
+    border: 1px solid var(--rule);
+    background: var(--bg);
+    color: var(--ink);
+    padding: 7px 14px;
+    font-family: 'Open Sans', Arial, sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    border-radius: 8px;
+    transition: background-color 140ms ease, color 140ms ease, border-color 140ms ease;
+    white-space: nowrap;
+  }
+  .pill:hover { background: #f1f7ec; border-color: var(--green); }
+  .pill.active { background: var(--green); color: #fff; border-color: var(--green); }
+  .pill:focus-visible { outline: 2px solid var(--green); outline-offset: 2px; }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .pill {
+      transition: transform 140ms ease, background-color 140ms ease, color 140ms ease,
+                  border-color 140ms ease, box-shadow 140ms ease;
+    }
+    .pill:hover { transform: translateY(-1px); box-shadow: 0 2px 6px rgba(4,7,2,0.06); }
+    .pill:active { transform: translateY(0); box-shadow: none; }
+  }
+
+  /* viz header with segmented toggle */
+  .viz-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+    gap: 16px;
+  }
+  .viz-title {
+    font-family: 'Montserrat', Arial, sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--ink);
+  }
+  .seg {
+    display: inline-flex;
+    height: 32px;
+    border: 1px solid var(--rule);
+    border-radius: 8px;
+    overflow: hidden;
+    background: var(--bg);
+  }
+  .seg-btn {
+    padding: 0 18px;
+    font-family: 'Open Sans', Arial, sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--ink);
+    background: transparent;
+    border: 0;
+    cursor: pointer;
+    transition: background-color 160ms ease, color 160ms ease;
+  }
+  .seg-btn + .seg-btn { border-left: 1px solid var(--rule); }
+  .seg-btn.active { background: var(--green); color: #fff; }
+  .seg-btn:focus-visible { outline: 2px solid var(--green); outline-offset: -2px; }
+
+  /* viz area with cross-fade between panes. The hidden pane goes out of flow
+     so the container tracks the visible pane's height: the map is much taller
+     than the chart, and a shared grid cell would leave a dead band under the
+     chart the size of the map. */
+  .viz-area { position: relative; padding: 6px 0; }
+  .viz-pane { opacity: 1; transition: opacity 300ms ease; }
+  .viz-pane.hidden {
+    position: absolute;
+    top: 6px; left: 0; right: 0;
+    opacity: 0;
+    pointer-events: none;
+  }
+  @media (prefers-reduced-motion: reduce) { .viz-pane { transition: none; } }
+
+  /* map */
+  .map-container { position: relative; width: 100%; max-width: 84%; margin: 0 auto; }
+  .us-map { width: 100%; height: auto; display: block; }
+  .us-map path.state {
+    stroke: #ffffff;
+    stroke-width: 0.8;
+    stroke-linejoin: round;
+    stroke-linecap: round;
+    cursor: pointer;
+    transition: stroke-width 120ms, stroke 120ms;
+  }
+  .us-map path.state:hover { stroke: var(--ink); stroke-width: 2; }
+  .us-map .nation { fill: none; stroke: none; pointer-events: none; }
+  .us-map .mexico-shape {
+    stroke: #ffffff;
+    stroke-width: 0.8;
+    cursor: pointer;
+    transition: stroke-width 120ms, stroke 120ms;
+  }
+  .us-map .mexico-shape:hover { stroke: var(--ink); stroke-width: 2; }
+
+  /* region label boxes */
+  .lbl-bg { fill: rgba(255,255,255,0.92); stroke: var(--rule); stroke-width: 0.5; }
+  .lbl-text {
+    font-family: 'Montserrat', Arial, sans-serif;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    fill: var(--green);
+    text-transform: uppercase;
+    pointer-events: none;
+  }
+  .lbl-leader { fill: none; stroke: var(--ink-muted); stroke-width: 0.6; }
+
+  /* border crossings */
+  .xing-marker { fill: var(--orange); stroke: #fff; stroke-width: 1.4; cursor: pointer; }
+  .xing-connector { fill: none; stroke: var(--orange); stroke-width: 0.8; }
+  .xing-card-bg { fill: rgba(255,255,255,0.96); stroke: var(--orange); stroke-width: 0.8; }
+  .xing-card-name {
+    font-family: 'Open Sans', Arial, sans-serif;
+    font-size: 9.5px; font-weight: 600; fill: var(--ink);
+    letter-spacing: 0.04em; text-transform: uppercase; pointer-events: none;
+  }
+  .xing-card-val {
+    font-family: 'Open Sans', Arial, sans-serif;
+    font-size: 10px; font-weight: 600; fill: var(--ink);
+    pointer-events: none; font-variant-numeric: tabular-nums;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .xing-marker {
+      transform-origin: center;
+      transform-box: fill-box;
+      animation: xing-pulse 1100ms cubic-bezier(.22,.61,.36,1) 1 both;
+    }
+    @keyframes xing-pulse {
+      0%   { transform: scale(0.2); opacity: 0; }
+      55%  { transform: scale(1.45); opacity: 1; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+  }
+
+  /* tooltip */
+  .tooltip {
+    position: absolute;
+    background: var(--ink);
+    color: #fff;
+    padding: 8px 12px;
+    border-radius: 6px;
+    font-family: 'Open Sans', Arial, sans-serif;
+    font-size: 12px;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 100ms;
+    z-index: 40;
+    box-shadow: 0 4px 12px rgba(4,7,2,0.18);
+    line-height: 1.45;
+    white-space: nowrap;
+    transform: translate(-50%, -100%);
+    font-variant-numeric: tabular-nums;
+  }
+  .tooltip strong {
+    font-family: 'Montserrat', Arial, sans-serif;
+    font-size: 13px; font-weight: 600; display: block; margin-bottom: 2px;
+  }
+  .tooltip .tt-detail { font-size: 11px; color: #d9d9d9; }
+  .tooltip .tt-verdict { font-size: 11px; font-weight: 600; margin-top: 2px; }
+  .tooltip .tt-n { font-size: 10.5px; color: #b3b4b3; margin-top: 3px; }
+
+  /* chart view */
+  .chart-svg { width: 100%; max-width: 84%; height: auto; display: block; margin: 0 auto; }
+  .chart-row-label {
+    font-family: 'Open Sans', Arial, sans-serif;
+    font-size: 12px; font-weight: 600; fill: var(--ink);
+  }
+  .chart-row-value {
+    font-family: 'Open Sans', Arial, sans-serif;
+    font-size: 12px; font-weight: 600; fill: var(--ink);
+    font-variant-numeric: tabular-nums;
+  }
+  .chart-bar { cursor: pointer; transition: opacity 120ms; }
+  .chart-bar:hover { opacity: 0.85; }
+  .chart-axis-line { stroke: #d9d9d9; stroke-width: 1; }
+  .chart-base-line { stroke: var(--ink-muted); stroke-width: 1; stroke-dasharray: 3 3; }
+  .chart-axis-text {
+    font-family: 'Open Sans', Arial, sans-serif;
+    font-size: 11px; font-weight: 600; fill: var(--ink-muted);
+  }
+  .chart-empty {
+    font-family: 'Open Sans', Arial, sans-serif;
+    font-size: 13px; fill: var(--ink-muted); text-anchor: middle;
+  }
+
+  /* diverging legend above the map */
+  .legend-horizontal {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    padding: 10px 14px;
+    background: var(--bg);
+    border: 1px solid var(--rule);
+    border-radius: 8px;
+    margin-bottom: 12px;
+    flex-wrap: wrap;
+  }
+  .legend-mid { display: flex; align-items: center; gap: 8px; flex: 1; min-width: 260px; }
+  .legend-bar-horiz {
+    display: flex; flex: 1; height: 12px;
+    border-radius: 4px; overflow: hidden; border: 1px solid var(--rule);
+  }
+  .legend-bar-horiz > div { flex: 1; }
+  .legend-ends-horiz {
+    font-family: 'Open Sans', Arial, sans-serif;
+    font-size: 11px; font-weight: 600; color: var(--ink-muted);
+    font-variant-numeric: tabular-nums; white-space: nowrap;
+  }
+  .legend-center {
+    font-family: 'Montserrat', Arial, sans-serif;
+    font-size: 10px; font-weight: 600; letter-spacing: 0.08em;
+    text-transform: uppercase; color: var(--ink-muted); white-space: nowrap;
+  }
+  .legend-current {
+    font-family: 'Open Sans', Arial, sans-serif;
+    font-size: 10px; font-weight: 600; color: var(--ink-soft);
+    letter-spacing: 0.08em; text-transform: uppercase;
+    border-left: 1px solid var(--rule); padding-left: 14px; white-space: nowrap;
+  }
+  .legend-current strong {
+    display: block;
+    font-family: 'Montserrat', Arial, sans-serif;
+    font-size: 13px; font-weight: 700; color: var(--ink);
+    text-transform: none; letter-spacing: 0;
+    font-variant-numeric: tabular-nums; margin-top: 2px; line-height: 1.3;
+  }
+
+  /* table view, so identity is never carried by color alone */
+  .table-toggle {
+    margin-top: 10px;
+    background: none; border: 0; padding: 0;
+    font-family: 'Open Sans', Arial, sans-serif;
+    font-size: 11.5px; font-weight: 600; color: var(--green);
+    cursor: pointer; text-decoration: underline; text-underline-offset: 3px;
+  }
+  .data-table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+  .data-table[hidden] { display: none; }
+  .data-table th {
+    font-family: 'Montserrat', Arial, sans-serif;
+    font-size: 11px; font-weight: 600; text-align: left;
+    color: #fff; background: var(--ink); padding: 8px 12px;
+  }
+  .data-table th.num, .data-table td.num { text-align: right; }
+  .data-table td {
+    font-size: 12.5px; padding: 7px 12px; color: var(--ink-soft);
+    border-bottom: 1px solid var(--rule); font-variant-numeric: tabular-nums;
+  }
+  .data-table tbody tr:nth-child(even) { background: #f8f9f8; }
+
+  .source {
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px solid var(--rule);
+    font-size: 11px;
+    color: var(--ink-muted);
+  }
+  .source .stale { color: var(--orange); font-weight: 600; }
+
+  @media (max-width: 640px) {
+    .card { padding: 16px 14px 14px; border-radius: 0; }
+    .head { flex-direction: column; gap: 6px; }
+    .head h1 { font-size: 18px; }
+    .pill { padding: 6px 10px; font-size: 12px; }
+    .ctrl-row { gap: 6px; }
+    .viz-header { flex-direction: column; align-items: flex-start; gap: 8px; }
+    .map-container, .chart-svg { max-width: 100%; }
+    .legend-horizontal { flex-direction: column; align-items: flex-start; gap: 8px; padding: 8px 10px; }
+    .legend-mid { min-width: 0; width: 100%; }
+    .legend-current { border-left: none; padding-left: 0; border-top: 1px solid var(--rule); padding-top: 8px; }
+    .seg-btn { padding: 0 12px; font-size: 12px; }
+    .source { font-size: 10px; }
+  }
+
+  @media print {
+    .controls, .viz-header, .table-toggle { display: none; }
+    body { background: white; }
+  }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+<div class="card">
+
+  <div class="head">
+    <div>
+      <h1>Q4 Reefer Truck Availability by Region <span class="period" id="periodName"></span></h1>
+      <div class="sub">USDA AMS availability index. 1 = surplus of capacity, 3 = adequate, 5 = shortage.</div>
+    </div>
+    <div class="meta" id="metaLine"></div>
+  </div>
+
+  <div class="controls">
+    <div class="ctrl-row">
+      <div class="pill-row" id="yearPills"></div>
+    </div>
+    <div class="ctrl-row">
+      <div class="pill-row" id="monthPills">
+        <button class="pill active" data-month="all">Full Q4</button>
+        <button class="pill" data-month="oct">Oct</button>
+        <button class="pill" data-month="nov">Nov</button>
+        <button class="pill" data-month="dec">Dec</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="viz-header">
+    <div class="viz-title">Regional capacity pressure</div>
+    <div class="seg" role="tablist" aria-label="View toggle">
+      <button class="seg-btn active" data-view="map" role="tab" aria-selected="true">Map</button>
+      <button class="seg-btn" data-view="chart" role="tab" aria-selected="false">Chart</button>
+    </div>
+  </div>
+
+  <div class="viz-layout">
+    <div class="legend-horizontal">
+      <div class="legend-mid">
+        <span class="legend-ends-horiz">1 · Surplus</span>
+        <div class="legend-bar-horiz" id="legendBar"></div>
+        <span class="legend-ends-horiz">Shortage · 5</span>
+      </div>
+      <div class="legend-center">Midpoint 3 · adequate</div>
+      <div class="legend-current" id="legendCurrent"></div>
+    </div>
+
+    <div class="viz-area">
+      <div class="viz-pane" id="mapPane">
+        <div class="map-container">
+          <svg class="us-map" viewBox="0 0 975 665" preserveAspectRatio="xMidYMid meet">
+            <g id="mexicoShapeG"></g>
+            <g id="statesG"></g>
+            <path class="nation" id="nationPath"></path>
+            <g id="labelsG"></g>
+            <g id="crossingsG"></g>
+          </svg>
+          <div class="tooltip" id="tooltip"></div>
+        </div>
+      </div>
+      <div class="viz-pane hidden" id="chartPane" aria-hidden="true">
+        <svg class="chart-svg" id="chartSvg" viewBox="0 0 960 560" preserveAspectRatio="xMidYMid meet"></svg>
+      </div>
+    </div>
+  </div>
+
+  <button class="table-toggle" id="tableToggle" aria-expanded="false" aria-controls="dataTable">Show data table</button>
+  <table class="data-table" id="dataTable" hidden>
+    <thead><tr><th>Region</th><th class="num">Availability</th><th>Reading</th><th class="num">Reports</th></tr></thead>
+    <tbody id="dataTableBody"></tbody>
+  </table>
+
+  <div class="source" id="sourceLine">Source: USDA AMS Refrigerated Truck Rates and Availability</div>
+</div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════════════════════
+// BAKED SNAPSHOT
+// scripts/build_chart.py rewrites this single line at build time. The page
+// still re-queries Socrata on load; the snapshot is what keeps the map
+// readable when that request cannot complete.
+// ═══════════════════════════════════════════════════════════════
+const DATA = {"meta":{"quarter":4,"years":[2022,2023,2024,2025],"built":"","source":""},"regions":[],"stats":{}};
+
+const SOCRATA_URL = "https://agtransport.usda.gov/resource/acar-e3r8.json";
+const QUARTER = DATA.meta.quarter || 4;
+const YEARS = DATA.meta.years;
+const MONTH_KEYS = { 10: "oct", 11: "nov", 12: "dec" };
+const MONTH_LABEL = { all: "Full Q4", oct: "October", nov: "November", dec: "December" };
+const BASE = 3;             // "adequate" on the 1-5 scale
+const THIN_SAMPLE = 20;     // fewer reports than this is flagged in the tooltip
+
+// ═══════════════════════════════════════════════════════════════
+// STATE → REGION (USDA AMS shipping districts)
+// ═══════════════════════════════════════════════════════════════
+const STATE_TO_REGION = {
+  "Arizona": "Arizona",
+  "California": "California",
+  "Colorado": "Colorado",
+  "Florida": "Florida",
+  "New York": "New York",
+  "Texas": "Texas",
+  "Michigan": "Great Lakes",
+  "Minnesota": "Great Lakes",
+  "Wisconsin": "Great Lakes",
+  "Ohio": "Great Lakes",
+  "Indiana": "Great Lakes",
+  "Illinois": "Great Lakes",
+  "Pennsylvania": "Mid-Atlantic",
+  "New Jersey": "Mid-Atlantic",
+  "Delaware": "Mid-Atlantic",
+  "Maryland": "Mid-Atlantic",
+  "Virginia": "Mid-Atlantic",
+  "West Virginia": "Mid-Atlantic",
+  "Washington": "PNW",
+  "Oregon": "PNW",
+  "Idaho": "PNW",
+  "North Carolina": "Southeast",
+  "South Carolina": "Southeast",
+  "Georgia": "Southeast",
+  "Alabama": "Southeast",
+  "Tennessee": "Southeast",
+  "Kentucky": "Southeast",
+};
+
+// Region labels positioned in the Albers frame the us-atlas file is drawn in.
+// `leader` draws a thin line from a label parked in open space back to its
+// district, for the eastern states too small to hold their own label.
+const REGION_LABELS = [
+  { region: "PNW",          x: 195, y: 130, text: "PNW" },
+  { region: "California",   x: 110, y: 270, text: "CALIF" },
+  { region: "Arizona",      x: 235, y: 360, text: "ARIZ" },
+  { region: "Colorado",     x: 345, y: 290, text: "COLO" },
+  { region: "Texas",        x: 470, y: 450, text: "TEXAS" },
+  { region: "Great Lakes",  x: 605, y: 205, text: "GREAT LAKES" },
+  { region: "New York",     x: 845, y: 155, text: "NY",      leader: { x: 805, y: 180 } },
+  { region: "Mid-Atlantic", x: 885, y: 250, text: "MID-ATL", leader: { x: 800, y: 225 } },
+  { region: "Southeast",    x: 705, y: 380, text: "SE" },
+  { region: "Florida",      x: 800, y: 510, text: "FLA" },
+];
+
+// US-MX border crossings. marker x/y is the Albers projection of the crossing
+// town so the dot sits on the border; card x/y parks the readout inside the
+// projected Mexico shape.
+const MEXICO_CROSSINGS = [
+  { region: "Mexico-California", name: "Otay Mesa",      marker: { x: 101, y: 402 }, card: { x:  95, y: 427 } },
+  { region: "Mexico-Arizona",    name: "Nogales",        marker: { x: 211, y: 451 }, card: { x: 200, y: 479 } },
+  { region: "Mexico-New Mexico", name: "Santa Teresa",   marker: { x: 285, y: 450 }, card: { x: 335, y: 516 } },
+  { region: "Mexico-Texas",      name: "Laredo / Pharr", marker: { x: 440, y: 574 }, card: { x: 434, y: 606 } },
+];
+
+// ═══════════════════════════════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════════════════════════════
+let data = DATA;
+let currentPeriod = "all";   // "all" (4-year average) or a year string
+let currentMonth = "all";    // "all" | "oct" | "nov" | "dec"
+let currentView = "map";
+let statePaths = null;
+let liveFetchFailed = false;
+
+// ═══════════════════════════════════════════════════════════════
+// HELPERS
+// ═══════════════════════════════════════════════════════════════
+function cell(region) {
+  const bucket = data.stats[currentPeriod];
+  if (!bucket) return { mean: null, n: 0 };
+  const byMonth = bucket[region];
+  if (!byMonth) return { mean: null, n: 0 };
+  return byMonth[currentMonth] || { mean: null, n: 0 };
+}
+
+function fmt(mean) {
+  return mean == null ? "no reports" : mean.toFixed(2);
+}
+
+// Seven diverging bands off the "adequate" midpoint. The cut points mirror the
+// language AMS uses for the index, so a color change always means the verdict
+// changed too.
+// Colour resolution and wording are set separately on purpose. The cuts are
+// fine so the map can move, but the words stay anchored to what the index
+// actually means: "Shortage" is held back to 3.8, not handed to a 3.4 that is
+// only modestly above adequate.
+const BANDS = [
+  { max: 2.2,  color: "--sur-4",   label: "Surplus" },
+  { max: 2.6,  color: "--sur-3",   label: "Loose" },
+  { max: 2.8,  color: "--sur-2",   label: "Slightly loose" },
+  { max: 2.95, color: "--sur-1",   label: "Balanced, loose side" },
+  { max: 3.05, color: "--mid-0",   label: "Adequate" },
+  { max: 3.2,  color: "--short-1", label: "Balanced, tight side" },
+  { max: 3.4,  color: "--short-2", label: "Slightly tight" },
+  { max: 3.8,  color: "--short-3", label: "Tight" },
+  { max: Infinity, color: "--short-4", label: "Shortage" },
+];
+
+// d3 tweens the fill attribute, and it cannot parse a `var(--token)` string, so
+// interpolating between two of them rendered every changing state black for the
+// length of the transition. Resolve the tokens to real hex once and hand d3
+// colors it can actually interpolate.
+const PALETTE = (() => {
+  const cs = getComputedStyle(document.documentElement);
+  const read = name => (cs.getPropertyValue(name) || "").trim();
+  const out = {
+    "--no-data": read("--no-data") || "#f2f2f2",
+    "--mexico-fill": read("--mexico-fill") || "#f2f2f2",
+  };
+  for (const b of BANDS) out[b.color] = read(b.color);
+  return out;
+})();
+
+function band(mean) {
+  return mean == null ? null : BANDS.find(b => mean < b.max);
+}
+
+function heatColor(mean) {
+  const b = band(mean);
+  return PALETTE[b ? b.color : "--no-data"];
+}
+
+function verdict(mean) {
+  const b = band(mean);
+  return b ? b.label : "No reports";
+}
+
+function periodLabel() {
+  return currentPeriod === "all"
+    ? `${YEARS[0]}-${YEARS[YEARS.length - 1]} average`
+    : currentPeriod;
+}
+
+function regionsWithData() {
+  return data.regions.filter(r => cell(r).mean != null);
+}
+
+// ═══════════════════════════════════════════════════════════════
+// CONTROLS
+// ═══════════════════════════════════════════════════════════════
+function renderYearPills() {
+  const el = document.getElementById("yearPills");
+  const opts = [{ key: "all", label: `${YEARS.length}-Yr Avg` }]
+    .concat(YEARS.map(y => ({ key: String(y), label: String(y) })));
+  el.innerHTML = opts
+    .map(o => `<button class="pill ${o.key === currentPeriod ? "active" : ""}" data-p="${o.key}">${o.label}</button>`)
+    .join("");
+  el.querySelectorAll(".pill").forEach(b => {
+    b.addEventListener("click", () => {
+      currentPeriod = b.dataset.p;
+      renderYearPills();
+      renderAll();
+    });
+  });
+}
+
+function bindMonthPills() {
+  document.querySelectorAll("#monthPills .pill").forEach(b => {
+    b.addEventListener("click", () => {
+      document.querySelectorAll("#monthPills .pill").forEach(p => p.classList.remove("active"));
+      b.classList.add("active");
+      currentMonth = b.dataset.month;
+      renderAll();
+    });
+  });
+}
+
+function bindViewToggle() {
+  document.querySelectorAll(".seg-btn").forEach(b => {
+    b.addEventListener("click", () => {
+      if (b.classList.contains("active")) return;
+      document.querySelectorAll(".seg-btn").forEach(p => {
+        p.classList.remove("active");
+        p.setAttribute("aria-selected", "false");
+      });
+      b.classList.add("active");
+      b.setAttribute("aria-selected", "true");
+      currentView = b.dataset.view;
+      const mapPane = document.getElementById("mapPane");
+      const chartPane = document.getElementById("chartPane");
+      const showMap = currentView === "map";
+      mapPane.classList.toggle("hidden", !showMap);
+      mapPane.setAttribute("aria-hidden", String(!showMap));
+      chartPane.classList.toggle("hidden", showMap);
+      chartPane.setAttribute("aria-hidden", String(showMap));
+    });
+  });
+}
+
+function bindTableToggle() {
+  const btn = document.getElementById("tableToggle");
+  const table = document.getElementById("dataTable");
+  btn.addEventListener("click", () => {
+    const open = table.hasAttribute("hidden");
+    if (open) table.removeAttribute("hidden"); else table.setAttribute("hidden", "");
+    btn.setAttribute("aria-expanded", String(open));
+    btn.textContent = open ? "Hide data table" : "Show data table";
+  });
+}
+
+// ═══════════════════════════════════════════════════════════════
+// LIVE REFRESH
+// The build bakes a snapshot; this pulls the current quarter's readings so an
+// embedded copy stays current between deploys.
+// ═══════════════════════════════════════════════════════════════
+const GREAT_LAKES = new Set(["GREAT LAKES","MICHIGAN","WISCONSIN","MINNESOTA","OHIO","INDIANA","ILLINOIS"]);
+const MID_ATLANTIC = new Set(["MID-ATLANTIC","PENNSYLVANIA","NEW JERSEY","DELAWARE","MARYLAND","VIRGINIA","WEST VIRGINIA"]);
+const SOUTHEAST = new Set(["SOUTHEAST","NORTH CAROLINA","SOUTH CAROLINA","GEORGIA","ALABAMA","TENNESSEE","KENTUCKY"]);
+const PNW = new Set(["PNW","PACIFIC NORTHWEST","WASHINGTON","OREGON","IDAHO"]);
+
+// Mirrors normalize_region() in scripts/fetch_data.py. Unrecognized origins
+// return null and are dropped rather than guessed at.
+function normalizeRegion(raw) {
+  const u = (raw || "").trim().toUpperCase();
+  if (!u) return null;
+  if (u.startsWith("MEXICO-CALIFORNIA")) return "Mexico-California";
+  if (u.startsWith("MEXICO-ARIZONA")) return "Mexico-Arizona";
+  if (u.startsWith("MEXICO-TEXAS")) return "Mexico-Texas";
+  if (u.startsWith("MEXICO-NEW MEXICO") || u.startsWith("MEXICO-NM")) return "Mexico-New Mexico";
+  if (u.startsWith("CALIFORNIA")) return "California";
+  if (PNW.has(u)) return "PNW";
+  if (u === "ARIZONA") return "Arizona";
+  if (u === "COLORADO") return "Colorado";
+  if (u === "FLORIDA") return "Florida";
+  if (u === "NEW YORK") return "New York";
+  if (u === "TEXAS") return "Texas";
+  if (GREAT_LAKES.has(u)) return "Great Lakes";
+  if (MID_ATLANTIC.has(u)) return "Mid-Atlantic";
+  if (SOUTHEAST.has(u)) return "Southeast";
+  return null;
+}
+
+// AMS publishes a `month` column that is the REPORTING month, which is not
+// always the calendar month of `date`: a marketing week that starts in late
+// December carries month 12 on a January date. Deriving the month from `date`
+// would push those weeks out of Q4 entirely. So ask for `month` first and only
+// fall back to the date if the column has been renamed (Socrata answers an
+// unknown $select field with a 400).
+async function fetchLive() {
+  const where = `quarter = ${QUARTER} AND year between ${YEARS[0]} and ${YEARS[YEARS.length - 1]}`;
+  for (const select of ["month,year,region,availability", "date,year,region,availability"]) {
+    const params = new URLSearchParams({ "$select": select, "$where": where, "$limit": "50000" });
+    const r = await fetch(`${SOCRATA_URL}?${params}`, { headers: { Accept: "application/json" } });
+    if (r.ok) return r.json();
+    if (r.status !== 400) throw new Error(`Socrata HTTP ${r.status}`);
+    console.warn(`Socrata rejected $select=${select}; retrying without the month column.`);
+  }
+  throw new Error("Socrata rejected every known column set");
+}
+
+function monthOf(row) {
+  if (row.month != null && row.month !== "") return parseInt(row.month, 10);
+  return parseInt(String(row.date || "").slice(5, 7), 10);
+}
+
+function aggregate(rows) {
+  const clean = [];
+  for (const d of rows) {
+    const year = parseInt(d.year, 10);
+    const month = monthOf(d);
+    const region = normalizeRegion(d.region);
+    const avail = parseFloat(d.availability);
+    if (!region) continue;
+    if (!YEARS.includes(year)) continue;
+    if (!MONTH_KEYS[month]) continue;
+    if (!Number.isFinite(avail) || avail < 1 || avail > 5) continue;
+    clean.push({ year, monthKey: MONTH_KEYS[month], region, avail });
+  }
+  if (!clean.length) throw new Error("Socrata returned no usable Q4 rows");
+
+  const regions = [...new Set(clean.map(d => d.region))];
+  const stat = arr => arr.length
+    ? { mean: Math.round((arr.reduce((s, v) => s + v, 0) / arr.length) * 1000) / 1000, n: arr.length }
+    : { mean: null, n: 0 };
+  const cells = rowsFor => {
+    const out = { all: stat(rowsFor.map(d => d.avail)) };
+    for (const key of Object.values(MONTH_KEYS)) {
+      out[key] = stat(rowsFor.filter(d => d.monthKey === key).map(d => d.avail));
+    }
+    return out;
+  };
+
+  const stats = { all: {} };
+  for (const region of regions) stats.all[region] = cells(clean.filter(d => d.region === region));
+  for (const y of YEARS) {
+    stats[String(y)] = {};
+    const inYear = clean.filter(d => d.year === y);
+    for (const region of regions) stats[String(y)][region] = cells(inYear.filter(d => d.region === region));
+  }
+
+  regions.sort((a, b) => stats.all[b].all.mean - stats.all[a].all.mean);
+  return { meta: { ...data.meta, live: true }, regions, stats };
+}
+
+// ═══════════════════════════════════════════════════════════════
+// MAP
+// ═══════════════════════════════════════════════════════════════
+async function loadTopology() {
+  const [usRes, worldRes] = await Promise.all([
+    fetch("https://cdn.jsdelivr.net/npm/us-atlas@3/states-albers-10m.json"),
+    fetch("https://cdn.jsdelivr.net/npm/world-atlas@2/countries-50m.json"),
+  ]);
+  const topology = await usRes.json();
+  const worldTopo = await worldRes.json();
+
+  // Drop Alaska (FIPS 02) and Hawaii (15): neither is an AMS shipping district
+  // and both stretch the Albers frame badly.
+  const contiguous = topology.objects.states.geometries.filter(g => g.id !== "02" && g.id !== "15");
+  statePaths = contiguous.map(g => topojson.feature(topology, g));
+  const path = d3.geoPath();
+  document.getElementById("nationPath").setAttribute("d", path(topojson.merge(topology, contiguous)));
+
+  // us-atlas states-albers-10m is pre-projected through geoAlbersUsa at
+  // scale 1300 / translate [487.5, 305]; its lower-48 arm is a plain geoAlbers
+  // with default rotate/center/parallels, so projecting Mexico through the same
+  // parameters lands it against the real border.
+  const albersPath = d3.geoPath(d3.geoAlbers().scale(1300).translate([487.5, 305]));
+  const countries = topojson.feature(worldTopo, worldTopo.objects.countries).features;
+  const mexico = countries.find(f => String(f.id) === "484" || (f.properties && f.properties.name === "Mexico"));
+  document.getElementById("mexicoShapeG").innerHTML = mexico
+    ? `<path class="mexico-shape" d="${albersPath(mexico)}" fill="${PALETTE["--mexico-fill"]}" />`
+    : "";
+}
+
+function moveTooltip(event) {
+  const tooltip = document.getElementById("tooltip");
+  const rect = document.querySelector("#mapPane .map-container").getBoundingClientRect();
+  tooltip.style.left = (event.clientX - rect.left) + "px";
+  tooltip.style.top = (event.clientY - rect.top - 12) + "px";
+}
+
+function tooltipHTML(title, region) {
+  const c = region ? cell(region) : null;
+  if (!region) {
+    return `<strong>${title}</strong><div class="tt-detail">Not an AMS shipping district</div>`;
+  }
+  const thin = c.n > 0 && c.n < THIN_SAMPLE ? " · thin sample" : "";
+  return `<strong>${title}</strong>
+    <div class="tt-detail">${region} · ${periodLabel()} · ${MONTH_LABEL[currentMonth]}</div>
+    <div class="tt-verdict" style="color:${c.mean == null ? "#b3b4b3" : "#fff"}">
+      ${fmt(c.mean)}${c.mean == null ? "" : " · " + verdict(c.mean)}</div>
+    <div class="tt-n">${c.n.toLocaleString()} report${c.n === 1 ? "" : "s"}${thin}</div>`;
+}
+
+function appendLabelBox(parent, x, y, text, leader) {
+  const g = parent.append("g");
+  if (leader) {
+    g.append("line").attr("class", "lbl-leader")
+      .attr("x1", x).attr("y1", y).attr("x2", leader.x).attr("y2", leader.y);
+    g.append("circle").attr("cx", leader.x).attr("cy", leader.y).attr("r", 1.5)
+      .attr("fill", "var(--ink-muted)");
+  }
+  const t = g.append("text").attr("class", "lbl-text")
+    .attr("x", x).attr("y", y)
+    .attr("text-anchor", "middle").attr("dominant-baseline", "central")
+    .text(text);
+  const bbox = t.node().getBBox();
+  g.insert("rect", "text").attr("class", "lbl-bg")
+    .attr("x", bbox.x - 6).attr("y", bbox.y - 3)
+    .attr("width", bbox.width + 12).attr("height", bbox.height + 6)
+    .attr("rx", 4).attr("ry", 4);
+}
+
+function renderMap() {
+  const tooltip = document.getElementById("tooltip");
+  const path = d3.geoPath();
+  const dur = window.matchMedia("(prefers-reduced-motion: reduce)").matches ? 0 : 420;
+
+  const states = d3.select("#statesG").selectAll("path.state").data(statePaths, d => d.id);
+  states.enter()
+    .append("path")
+    .attr("class", "state")
+    .attr("d", path)
+    .attr("fill", PALETTE["--no-data"])
+    .on("mouseenter", function (event, d) {
+      d3.select(this).raise();
+      tooltip.innerHTML = tooltipHTML(d.properties.name, STATE_TO_REGION[d.properties.name]);
+      tooltip.style.opacity = "1";
+    })
+    .on("mousemove", moveTooltip)
+    .on("mouseleave", () => { tooltip.style.opacity = "0"; })
+    .merge(states)
+    .transition().duration(dur)
+    .attr("fill", d => {
+      const region = STATE_TO_REGION[d.properties.name];
+      return region ? heatColor(cell(region).mean) : PALETTE["--no-data"];
+    });
+  states.exit().remove();
+
+  // Mexico is colored by the mean across whichever crossings reported, so the
+  // landmass never implies a reading the crossings do not support.
+  const mexReadings = MEXICO_CROSSINGS
+    .map(xc => cell(xc.region).mean)
+    .filter(v => v != null);
+  const mexMean = mexReadings.length
+    ? mexReadings.reduce((s, v) => s + v, 0) / mexReadings.length
+    : null;
+  const mexShape = d3.select(".mexico-shape");
+  if (!mexShape.empty()) {
+    mexShape.transition().duration(dur).attr("fill", heatColor(mexMean));
+    mexShape
+      .on("mouseenter", () => {
+        tooltip.innerHTML = mexMean == null
+          ? `<strong>Mexico</strong><div class="tt-detail">No border crossing reports</div>`
+          : `<strong>Mexico</strong>
+             <div class="tt-detail">${mexReadings.length} crossing${mexReadings.length === 1 ? "" : "s"} reporting · ${periodLabel()}</div>
+             <div class="tt-verdict">${mexMean.toFixed(2)} · ${verdict(mexMean)}</div>`;
+        tooltip.style.opacity = "1";
+      })
+      .on("mousemove", moveTooltip)
+      .on("mouseleave", () => { tooltip.style.opacity = "0"; });
+  }
+
+  const labelsG = d3.select("#labelsG");
+  labelsG.selectAll("*").remove();
+  REGION_LABELS.forEach(l => appendLabelBox(labelsG, l.x, l.y, l.text, l.leader));
+
+  const crossingsG = d3.select("#crossingsG");
+  crossingsG.selectAll("*").remove();
+  MEXICO_CROSSINGS.forEach(xc => {
+    const c = cell(xc.region);
+    crossingsG.append("line").attr("class", "xing-connector")
+      .attr("x1", xc.marker.x).attr("y1", xc.marker.y)
+      .attr("x2", xc.card.x + 55).attr("y2", xc.card.y);
+
+    const g = crossingsG.append("g");
+    const name = g.append("text").attr("class", "xing-card-name")
+      .attr("x", xc.card.x + 55).attr("y", xc.card.y + 11)
+      .attr("text-anchor", "middle").text(xc.name);
+    g.append("text").attr("class", "xing-card-val")
+      .attr("x", xc.card.x + 55).attr("y", xc.card.y + 26)
+      .attr("text-anchor", "middle")
+      .text(c.mean == null ? "no reports" : `${c.mean.toFixed(2)} · ${verdict(c.mean)}`);
+    const cardW = Math.max(name.node().getBBox().width + 16, 118);
+    g.insert("rect", "text").attr("class", "xing-card-bg")
+      .attr("x", xc.card.x + 55 - cardW / 2).attr("y", xc.card.y - 2)
+      .attr("width", cardW).attr("height", 34)
+      .attr("rx", 6).attr("ry", 6);
+
+    crossingsG.append("circle").attr("class", "xing-marker")
+      .attr("cx", xc.marker.x).attr("cy", xc.marker.y).attr("r", 5)
+      .on("mouseenter", () => {
+        tooltip.innerHTML = tooltipHTML(xc.name, xc.region);
+        tooltip.style.opacity = "1";
+      })
+      .on("mousemove", moveTooltip)
+      .on("mouseleave", () => { tooltip.style.opacity = "0"; });
+  });
+}
+
+// ═══════════════════════════════════════════════════════════════
+// CHART — diverging bars off the "adequate" midpoint
+// ═══════════════════════════════════════════════════════════════
+// Largest |mean - 3| across every period and month in the dataset, padded so
+// the widest bar does not run flush into its value label. Floored at 0.5 so a
+// uniformly adequate quarter does not blow tiny differences up into full-width
+// bars.
+let _maxDev = null;
+function maxDeviation() {
+  if (_maxDev != null) return _maxDev;
+  let m = 0;
+  for (const period of Object.values(data.stats || {})) {
+    for (const byMonth of Object.values(period)) {
+      for (const c of Object.values(byMonth)) {
+        if (c && c.mean != null) m = Math.max(m, Math.abs(c.mean - BASE));
+      }
+    }
+  }
+  _maxDev = Math.max(m + 0.12, 0.5);
+  return _maxDev;
+}
+
+function renderChart() {
+  const svg = d3.select("#chartSvg");
+  svg.selectAll("*").remove();
+
+  const rows = regionsWithData()
+    .map(r => ({ region: r, ...cell(r) }))
+    .sort((a, b) => b.mean - a.mean);
+
+  const W = 960, marginL = 150, marginR = 90, marginT = 44, marginB = 18;
+  const rowH = 26, gap = 8;
+  const H = Math.max(marginT + marginB + rows.length * (rowH + gap), 220);
+  svg.attr("viewBox", `0 0 ${W} ${H}`);
+
+  if (!rows.length) {
+    svg.append("text").attr("class", "chart-empty")
+      .attr("x", W / 2).attr("y", H / 2).text("No reports for this selection");
+    return;
+  }
+
+  const plotW = W - marginL - marginR;
+  const midX = marginL + plotW / 2;
+  // Bar length is scaled to the largest deviation anywhere in the dataset, not
+  // the largest in the current selection, so switching year or month never
+  // rescales the bars underneath the reader. Q4 deviations from "adequate" are
+  // small enough that the full 1-5 scale would render most regions as slivers.
+  const scale = d3.scaleLinear().domain([0, maxDeviation()]).range([0, plotW / 2]);
+  const dur = window.matchMedia("(prefers-reduced-motion: reduce)").matches ? 0 : 420;
+
+  svg.append("text").attr("class", "chart-axis-text")
+    .attr("x", marginL).attr("y", marginT - 22).text("← toward surplus (1)");
+  svg.append("text").attr("class", "chart-axis-text")
+    .attr("x", W - marginR).attr("y", marginT - 22)
+    .attr("text-anchor", "end").text("toward shortage (5) →");
+  svg.append("text").attr("class", "chart-axis-text")
+    .attr("x", midX).attr("y", marginT - 22)
+    .attr("text-anchor", "middle").text("adequate (3)");
+  svg.append("line").attr("class", "chart-axis-line")
+    .attr("x1", marginL).attr("x2", W - marginR)
+    .attr("y1", marginT - 12).attr("y2", marginT - 12);
+  svg.append("line").attr("class", "chart-base-line")
+    .attr("x1", midX).attr("x2", midX)
+    .attr("y1", marginT - 12).attr("y2", H - marginB);
+
+  rows.forEach((row, i) => {
+    const y = marginT + i * (rowH + gap);
+    const dev = row.mean - BASE;
+    const w = Math.max(scale(Math.abs(dev)), 3);
+    const x = dev >= 0 ? midX : midX - w;
+
+    svg.append("text").attr("class", "chart-row-label")
+      .attr("x", marginL - 12).attr("y", y + rowH / 2)
+      .attr("text-anchor", "end").attr("dominant-baseline", "central")
+      .text(row.region);
+
+    const bar = svg.append("rect").attr("class", "chart-bar")
+      .attr("x", midX).attr("y", y + 3)
+      .attr("width", 0).attr("height", rowH - 6)
+      .attr("rx", 4).attr("ry", 4)
+      .attr("fill", heatColor(row.mean));
+    bar.append("title")
+      .text(`${row.region} · ${row.mean.toFixed(2)} · ${verdict(row.mean)} · ${row.n.toLocaleString()} reports`);
+    bar.transition().duration(dur).attr("x", x).attr("width", w);
+
+    svg.append("text").attr("class", "chart-row-value")
+      .attr("x", dev >= 0 ? midX + w + 8 : midX - w - 8)
+      .attr("y", y + rowH / 2)
+      .attr("text-anchor", dev >= 0 ? "start" : "end")
+      .attr("dominant-baseline", "central")
+      .text(row.mean.toFixed(2));
+  });
+}
+
+// ═══════════════════════════════════════════════════════════════
+// LEGEND, TABLE, HEADER
+// ═══════════════════════════════════════════════════════════════
+function renderLegend() {
+  document.getElementById("legendBar").innerHTML = BANDS
+    .map(b => `<div style="background:var(${b.color})" title="${b.label}"></div>`).join("");
+
+  const withData = regionsWithData().map(r => ({ region: r, ...cell(r) }));
+  const tightest = withData.reduce((best, r) => (best && best.mean >= r.mean ? best : r), null);
+  document.getElementById("legendCurrent").innerHTML = tightest
+    ? `Tightest region · ${MONTH_LABEL[currentMonth]}<strong>${tightest.region} — ${tightest.mean.toFixed(2)} (${verdict(tightest.mean)})</strong>`
+    : `Tightest region · ${MONTH_LABEL[currentMonth]}<strong>No reports</strong>`;
+}
+
+function renderTable() {
+  const rows = regionsWithData()
+    .map(r => ({ region: r, ...cell(r) }))
+    .sort((a, b) => b.mean - a.mean);
+  document.getElementById("dataTableBody").innerHTML = rows.length
+    ? rows.map(r => `<tr><td>${r.region}</td><td class="num">${r.mean.toFixed(2)}</td>` +
+        `<td>${verdict(r.mean)}</td><td class="num">${r.n.toLocaleString()}</td></tr>`).join("")
+    : `<tr><td colspan="4">No reports for this selection.</td></tr>`;
+}
+
+function renderHeader() {
+  document.getElementById("periodName").textContent =
+    currentPeriod === "all" ? `(${YEARS.length}-Year Avg.)` : `(${currentPeriod})`;
+  const built = data.meta.built ? ` · built ${data.meta.built}` : "";
+  document.getElementById("metaLine").textContent =
+    `${YEARS[0]}-${YEARS[YEARS.length - 1]} Q4${built}`;
+  document.getElementById("sourceLine").innerHTML =
+    "Source: USDA AMS Refrigerated Truck Rates and Availability (Socrata acar-e3r8)." +
+    (liveFetchFailed
+      ? ' <span class="stale">Live refresh unavailable, showing the last published snapshot.</span>'
+      : "");
+}
+
+function renderAll() {
+  renderHeader();
+  if (statePaths) renderMap();
+  renderChart();
+  renderLegend();
+  renderTable();
+}
+
+// ═══════════════════════════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════════════════════════
+(async function init() {
+  renderYearPills();
+  bindMonthPills();
+  bindViewToggle();
+  bindTableToggle();
+  renderAll();
+
+  try {
+    await loadTopology();
+  } catch (e) {
+    console.error("Failed to load US map topology:", e);
+    document.querySelector("#mapPane .map-container").innerHTML =
+      `<div style="padding:40px;text-align:center;color:#818380">
+         Could not load the US map outline. The Chart view has the same numbers.
+       </div>`;
+  }
+
+  try {
+    data = aggregate(await fetchLive());
+    _maxDev = null;
+  } catch (e) {
+    console.warn("Live USDA refresh failed, using the baked snapshot:", e);
+    liveFetchFailed = true;
+  }
+  renderAll();
+})();
+</script>
+</body>
+</html>
