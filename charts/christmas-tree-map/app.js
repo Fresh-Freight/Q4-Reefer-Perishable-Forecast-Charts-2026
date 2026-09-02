@@ -48,15 +48,9 @@ Promise.all([d3.json(COUNTIES_URL), d3.json(DATA_URL)])
           const v = counts[fips5(d.id)];
           return v == null ? "var(--no-data)" : color(v);
         })
-        .on("pointerenter", function (event, d) {
-          d3.select(this).raise().classed("hover", true);
-          showTip(event, d);
-        })
+        .on("pointerenter", (event, d) => showTip(event, d))
         .on("pointermove", (event, d) => showTip(event, d))
-        .on("pointerleave", function () {
-          d3.select(this).classed("hover", false);
-          tooltip.hidden = true;
-        });
+        .on("pointerleave", () => { tooltip.hidden = true; });
 
     // State borders + nation outline for reference
     svg.append("path").attr("class", "state-line")
