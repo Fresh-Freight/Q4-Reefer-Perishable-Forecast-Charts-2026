@@ -1,0 +1,6 @@
+node_modules/
+.DS_Store
+Thumbs.db
+# raw NASS Census extract (intermediate); the built data/christmas_trees.json is committed
+*.tsv
+christmas_rows.tsv

@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Where Christmas Trees Grow — U.S. Production Map</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <main class="container">
+    <header class="header">
+      <div class="eyebrow">Fresh Freight · Q4 Freight Origins</div>
+      <h1>Where Christmas Trees Grow</h1>
+      <p class="subtitle">U.S. Christmas tree production by county — number of trees cut (grown &amp; sold), 2022 USDA Census of Agriculture.</p>
+    </header>
+
+    <div class="stats" id="stats"></div>
+
+    <div class="controls">
+      <span class="ctrl-label">Shade by trees cut in 2022 · hover a county for detail</span>
+    </div>
+
+    <div class="map-wrap">
+      <svg id="map" role="img" aria-label="U.S. county map of Christmas tree production, 2022"></svg>
+      <div class="legend" id="legend"></div>
+      <div class="tooltip" id="tooltip" hidden></div>
+    </div>
+
+    <p class="attribution">
+      Source: USDA National Agricultural Statistics Service — 2022 Census of Agriculture
+      (Cut Christmas Trees, area harvested measured in trees). Counties with too few growers are
+      withheld by USDA for confidentiality and appear unshaded.
+    </p>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/d3@7/dist/d3.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/topojson-client@3/dist/topojson-client.min.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

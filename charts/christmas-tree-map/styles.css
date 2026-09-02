@@ -1,0 +1,70 @@
+:root {
+  --bg: #ffffff;
+  --ink: #1a1a1a;
+  --ink-soft: #5a5a5a;
+  --ink-muted: #9a9a9a;
+  --rule: #e5e5e5;
+  --accent: #ec7700;        /* Mango Tango */
+  --accent-dark: #8c3f00;
+  --no-data: #eef0f2;
+  --state-line: #ffffff;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: 'Open Sans', system-ui, sans-serif;
+  font-size: 14px;
+  line-height: 1.5;
+  font-variant-numeric: tabular-nums;
+}
+h1, h2, h3 { font-family: 'Montserrat', sans-serif; font-weight: 700; }
+.container { max-width: 1080px; margin: 0 auto; padding: 28px 22px 40px; }
+
+.header { border-bottom: 1px solid var(--rule); padding-bottom: 14px; margin-bottom: 16px; }
+.eyebrow {
+  font-family: 'Montserrat', sans-serif; font-size: 11px; font-weight: 600;
+  letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent-dark);
+}
+.header h1 { font-size: 24px; letter-spacing: -0.01em; margin-top: 4px; }
+.subtitle { color: var(--ink-soft); font-size: 13px; margin-top: 6px; max-width: 680px; }
+
+.stats { display: flex; flex-wrap: wrap; gap: 26px; margin: 16px 0 8px; }
+.stat .num { font-family: 'Montserrat', sans-serif; font-size: 22px; font-weight: 700; color: var(--ink); }
+.stat .lbl { font-size: 11px; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; color: var(--ink-muted); }
+
+.controls { margin: 10px 0 6px; }
+.ctrl-label {
+  font-family: 'Montserrat', sans-serif; font-size: 11px; font-weight: 600;
+  letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink-muted);
+}
+
+.map-wrap { position: relative; }
+.chart-svg, #map { width: 100%; height: auto; display: block; }
+
+.county { stroke: #ffffff; stroke-width: 0.15; }
+.county.hover { stroke: var(--ink); stroke-width: 0.8; }
+.state-line { fill: none; stroke: var(--state-line); stroke-width: 0.7; pointer-events: none; }
+.nation-line { fill: none; stroke: #cfd3d7; stroke-width: 0.8; pointer-events: none; }
+
+.legend { display: flex; flex-wrap: wrap; align-items: center; gap: 2px 14px; margin-top: 6px; }
+.legend .lg-title { font-size: 11px; font-weight: 600; color: var(--ink-muted); text-transform: uppercase; letter-spacing: 0.06em; margin-right: 6px; }
+.legend .lg-item { display: inline-flex; align-items: center; gap: 5px; font-size: 11.5px; color: var(--ink-soft); }
+.legend .sw { width: 15px; height: 15px; border-radius: 3px; border: 1px solid rgba(0,0,0,0.08); }
+
+.tooltip {
+  position: absolute; pointer-events: none; z-index: 20;
+  background: var(--ink); color: #fff; padding: 9px 11px; border-radius: 6px;
+  font-size: 12px; line-height: 1.4; box-shadow: 0 4px 14px rgba(0,0,0,0.2);
+  max-width: 220px;
+}
+.tooltip .tt-name { font-family: 'Montserrat', sans-serif; font-weight: 600; font-size: 12.5px; margin-bottom: 2px; }
+.tooltip .tt-val { font-size: 16px; font-weight: 700; color: #8fd36a; font-family: 'Montserrat', sans-serif; }
+.tooltip .tt-sub { font-size: 10.5px; color: #b8bcc0; margin-top: 2px; }
+
+.attribution { margin-top: 16px; font-size: 11px; color: var(--ink-muted); }
+
+@media (max-width: 620px) {
+  .stats { gap: 18px; }
+  .stat .num { font-size: 18px; }
+}

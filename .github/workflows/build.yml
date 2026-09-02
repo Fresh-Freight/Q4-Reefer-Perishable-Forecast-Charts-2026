@@ -55,6 +55,17 @@ jobs:
           cp -r charts/climate-map/data docs/climate-map/data
 
       # ─────────────────────────────────────────────────────────────
+      # christmas-tree-map  (static; USDA 2022 Census, baked data)
+      # ─────────────────────────────────────────────────────────────
+      - name: Stage — christmas-tree-map
+        run: |
+          mkdir -p docs/christmas-tree-map
+          cp charts/christmas-tree-map/index.html charts/christmas-tree-map/app.js \
+             charts/christmas-tree-map/styles.css \
+             docs/christmas-tree-map/
+          cp -r charts/christmas-tree-map/data docs/christmas-tree-map/data
+
+      # ─────────────────────────────────────────────────────────────
       # Landing page
       # ─────────────────────────────────────────────────────────────
       - name: Stage landing page
