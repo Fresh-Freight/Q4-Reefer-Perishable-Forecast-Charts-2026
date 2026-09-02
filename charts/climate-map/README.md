@@ -36,12 +36,29 @@ Q='where=1=1&outFields=cat,prob&returnGeometry=true&outSR=4326&f=geojson'
 base='https://mapservices.weather.noaa.gov/vector/rest/services/outlooks'
 curl -s "$base/cpc_sea_temp_outlk/MapServer/1/query?$Q"   -o raw_temp.geojson
 curl -s "$base/cpc_sea_precip_outlk/MapServer/1/query?$Q" -o raw_precip.geojson
-npx mapshaper raw_temp.geojson   -simplify 12% keep-shapes -each 'Cat=cat, Prob=prob' -filter-fields Cat,Prob -o precision=0.01 data/outlook-temp.geojson
-npx mapshaper raw_precip.geojson -simplify 12% keep-shapes -each 'Cat=cat, Prob=prob' -filter-fields Cat,Prob -o precision=0.01 data/outlook-precip.geojson
+# 1) simplify + rename fields
+npx mapshaper raw_temp.geojson   -simplify 12% keep-shapes -each 'Cat=cat, Prob=prob' -filter-fields Cat,Prob -o precision=0.01 base_temp.geojson
+npx mapshaper raw_precip.geojson -simplify 12% keep-shapes -each 'Cat=cat, Prob=prob' -filter-fields Cat,Prob -o precision=0.01 base_precip.geojson
+# 2) fix winding LAST — see WINDING note below
+node scripts/rewind-cw.cjs base_temp.geojson   data/outlook-temp.geojson
+node scripts/rewind-cw.cjs base_precip.geojson data/outlook-precip.geojson
 ```
 
 Pick the layer whose `valid_seas` is the season you want (Lead 1 = nearest
 upcoming three months). Then update `data/outlook-meta.json`.
+
+### ⚠️ WINDING — the critical step
+
+`app.js` renders with `d3.geoPath`, whose spherical fill rule needs
+**clockwise exterior rings** (and counter-clockwise holes). ArcGIS/mapshaper
+output does **not** guarantee this, and getting it wrong is silent-but-fatal:
+with the wrong winding d3 fills each polygon's *complement*, or fails to
+subtract the "equal chances" holes — so the whole map floods green and the
+gray EC zones vanish. `scripts/rewind-cw.cjs` classifies exterior vs. hole
+rings by geometry (via `@mapbox/geojson-rewind`) and forces CW exteriors.
+Always run it **last**, after any mapshaper step (mapshaper can re-wind on
+output). Sanity-check: the south-central US should read gray on the Q4 temp
+map, not green.
 
 ## File layout
 
