@@ -43,7 +43,7 @@ h1, h2, h3 { font-family: 'Montserrat', sans-serif; font-weight: 700; }
 .chart-svg, #map { width: 100%; height: auto; display: block; }
 
 .land { fill: #eef2f0; stroke: none; }
-.state-line { fill: none; stroke: #dbe1de; stroke-width: 0.6; pointer-events: none; }
+.state-line { fill: none; stroke: #9aa1a8; stroke-width: 0.7; pointer-events: none; }
 .spike { transition: fill-opacity 120ms ease; }
 .spike:hover { fill-opacity: 1 !important; }
 .callouts { pointer-events: none; }

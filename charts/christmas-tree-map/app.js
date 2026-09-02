@@ -38,8 +38,6 @@ Promise.all([d3.json(COUNTIES_URL), d3.json(DATA_URL)])
     const counts = data.counties;
     const names = data.names;
 
-    renderStats(data.metadata);
-
     const counties = topojson.feature(us, us.objects.counties);
     const projection = d3.geoAlbersUsa().fitSize([W, H], topojson.feature(us, us.objects.nation));
     const path = d3.geoPath(projection);
@@ -117,17 +115,6 @@ Promise.all([d3.json(COUNTIES_URL), d3.json(DATA_URL)])
       .attr("fill", "#888").style("font-family", "Open Sans, sans-serif")
       .text("Map data failed to load — check your connection and refresh.");
   });
-
-function renderStats(m) {
-  const el = document.getElementById("stats");
-  const top = m.top_states && m.top_states[0];
-  const items = [
-    { num: (m.total_trees / 1e6).toFixed(1) + "M", lbl: "Trees cut (disclosed, 2022)" },
-    { num: fmt(m.counties_reporting), lbl: "Counties reporting" },
-    { num: top ? top.s : "—", lbl: "Top state" },
-  ];
-  el.innerHTML = items.map((i) => `<div class="stat"><div class="num">${i.num}</div><div class="lbl">${i.lbl}</div></div>`).join("");
-}
 
 // Spike-height size legend.
 function drawSizeLegend(hScale) {
