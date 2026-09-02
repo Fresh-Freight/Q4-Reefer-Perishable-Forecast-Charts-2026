@@ -8,10 +8,13 @@ const COUNTIES_URL = "https://cdn.jsdelivr.net/npm/us-atlas@3/counties-10m.json"
 const DATA_URL = "data/christmas_trees.json";
 const W = 960, H = 600;
 
-const SPIKE_HALF = 3.4;      // half-width of a spike base (px)
-const MAX_HEIGHT = 150;      // tallest spike (px), for the biggest county
+const SPIKE_HALF = 3.2;      // half-width of a spike base (px)
+const MAX_HEIGHT = 96;       // tallest spike (px), for the biggest county
 const MIN_HEIGHT = 3;        // floor so tiny producers still show
-const TOP_PAD = 90;          // headroom above the map so tall spikes don't clip
+const TOP_PAD = 30;          // headroom above the map so tall spikes don't clip
+// Invisible, generous hover target per county so even tiny spikes are easy to hit.
+const HIT_HALF = 8;          // half-width of the hover target (px)
+const HIT_MIN_H = 14;        // minimum hover-target height (px)
 const LEGEND_VALUES = [25000, 250000, 1000000, 2000000];
 
 const svg = d3.select("#map").attr("viewBox", `0 ${-TOP_PAD} ${W} ${H + TOP_PAD}`).attr("preserveAspectRatio", "xMidYMid meet");
@@ -59,7 +62,22 @@ Promise.all([d3.json(COUNTIES_URL), d3.json(DATA_URL)])
         .attr("fill", "url(#spikeGrad)")
         .attr("fill-opacity", 0.82)
         .attr("stroke", "#0f3d13")
-        .attr("stroke-width", 0.3)
+        .attr("stroke-width", 0.3);
+
+    // Invisible, generous hover targets on top — wider than the spikes so even
+    // tiny producers are easy to hover. These drive the tooltip.
+    svg.append("g")
+      .selectAll("path.hit")
+      .data(producers)
+      .join("path")
+        .attr("class", "hit")
+        .attr("transform", (o) => `translate(${o.c[0]},${o.c[1]})`)
+        .attr("d", (o) => {
+          const h = Math.max(HIT_MIN_H, hScale(o.v));
+          return `M${-HIT_HALF},0 L0,${-h} L${HIT_HALF},0 Z`;
+        })
+        .attr("fill", "transparent")
+        .style("cursor", "pointer")
         .on("pointerenter", (event, o) => showTip(event, o))
         .on("pointermove", (event, o) => showTip(event, o))
         .on("pointerleave", () => { tooltip.hidden = true; });
