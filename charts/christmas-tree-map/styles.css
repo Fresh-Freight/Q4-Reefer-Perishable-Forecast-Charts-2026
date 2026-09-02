@@ -42,10 +42,9 @@ h1, h2, h3 { font-family: 'Montserrat', sans-serif; font-weight: 700; }
 .map-wrap { position: relative; }
 .chart-svg, #map { width: 100%; height: auto; display: block; }
 
-.land { fill: #eef0f2; stroke: none; }
-.state-line { fill: none; stroke: #d4d8dc; stroke-width: 0.6; pointer-events: none; }
-.bubble { transition: fill-opacity 120ms ease; }
-.bubble:hover { fill-opacity: 0.85 !important; }
+.county { stroke: none; }
+.state-line { fill: none; stroke: #c7ccd1; stroke-width: 0.6; pointer-events: none; }
+.nation-line { fill: none; stroke: #cfd3d7; stroke-width: 0.8; pointer-events: none; }
 
 .legend { display: flex; flex-wrap: wrap; align-items: center; gap: 2px 14px; margin-top: 6px; }
 .legend .lg-title { font-size: 11px; font-weight: 600; color: var(--ink-muted); text-transform: uppercase; letter-spacing: 0.06em; margin-right: 6px; }
