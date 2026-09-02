@@ -1,0 +1,1102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EIA Diesel Price Outlook</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700&family=Open+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation@3.1.0/dist/chartjs-plugin-annotation.min.js"></script>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Open Sans', sans-serif;
+    background: transparent;
+    color: #1a1a1a;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .container {
+    max-width: 1060px;
+    margin: 0 auto;
+    background: #fff;
+    border-radius: 10px;
+    padding: 24px 28px 20px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06), 0 8px 24px rgba(0,0,0,0.04);
+  }
+
+  .header-row {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    margin-bottom: 4px;
+  }
+
+  h1 {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 700;
+    font-size: 24px;
+    color: #1a1a1a;
+  }
+
+  .subtitle {
+    font-size: 13px;
+    color: #888;
+    padding-bottom: 10px;
+    margin-bottom: 14px;
+    border-bottom: 1px solid #eef0f2;
+  }
+
+  /* — KPI cards — */
+  .kpi-row {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+
+  .kpi {
+    display: flex;
+    flex-direction: column;
+    padding: 12px 18px;
+    border-radius: 8px;
+    background: #fafbfc;
+    border: 1px solid #eef0f2;
+    min-width: 180px;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+
+  .kpi:hover {
+    border-color: #dde0e4;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  }
+
+  .kpi-label {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: #999;
+    font-weight: 600;
+    margin-bottom: 4px;
+  }
+
+  .kpi-value {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 700;
+    font-size: 26px;
+    line-height: 1.15;
+  }
+
+  .kpi-value.actual { color: #1a1a1a; }
+  .kpi-value.forecast { color: #ec7700; }
+
+  .kpi-detail {
+    font-size: 11px;
+    color: #aaa;
+    margin-top: 2px;
+  }
+
+  /* — Chart — */
+  .chart-section {
+    margin-bottom: 20px;
+  }
+
+  .legend-row {
+    display: flex;
+    gap: 20px;
+    margin-bottom: 12px;
+  }
+
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    color: #777;
+  }
+
+  .legend-swatch {
+    width: 24px;
+    height: 3px;
+    border-radius: 2px;
+  }
+
+  .legend-swatch.dashed {
+    background: repeating-linear-gradient(
+      90deg,
+      #ec7700 0px, #ec7700 6px,
+      transparent 6px, transparent 10px
+    );
+  }
+
+  .chart-wrap {
+    position: relative;
+    width: 100%;
+    height: 260px;
+  }
+
+  /* — Range slider — */
+  .range-slider-wrap {
+    position: relative;
+    height: 48px;
+    margin-top: 8px;
+    user-select: none;
+  }
+
+  .range-mini-canvas {
+    width: 100%;
+    height: 32px;
+    border-radius: 4px;
+  }
+
+  .range-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 32px;
+    pointer-events: none;
+  }
+
+  .range-mask-left, .range-mask-right {
+    position: absolute;
+    top: 0;
+    height: 100%;
+    background: rgba(255,255,255,0.75);
+    pointer-events: all;
+    cursor: pointer;
+    border-radius: 4px;
+  }
+
+  .range-mask-left { left: 0; }
+  .range-mask-right { right: 0; }
+
+  .range-window {
+    position: absolute;
+    top: 0;
+    height: 100%;
+    border: 2px solid #4a8b2c;
+    border-radius: 5px;
+    cursor: grab;
+    pointer-events: all;
+    background: rgba(74,139,44,0.04);
+    transition: border-color 0.15s;
+  }
+
+  .range-window:active { cursor: grabbing; }
+  .range-window:hover { border-color: #3a7522; }
+
+  .range-handle {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 10px;
+    height: 24px;
+    background: #4a8b2c;
+    border-radius: 3px;
+    cursor: ew-resize;
+    pointer-events: all;
+    z-index: 2;
+    transition: background 0.15s, transform 0.15s;
+  }
+
+  .range-handle:hover, .range-handle:active {
+    background: #3a7522;
+    transform: translateY(-50%) scaleY(1.1);
+  }
+
+  .range-handle-left { left: -6px; }
+  .range-handle-right { right: -6px; }
+
+  .range-handle::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 2px;
+    height: 10px;
+    background: rgba(255,255,255,0.6);
+    border-radius: 1px;
+  }
+
+  .range-date-labels {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 4px;
+    font-size: 10px;
+    color: #bbb;
+    font-weight: 500;
+  }
+
+  /* — Divider — */
+  .section-divider {
+    height: 1px;
+    background: #eef0f2;
+    margin-bottom: 16px;
+  }
+
+  /* — Region section — */
+  .section-header {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    margin-bottom: 12px;
+  }
+
+  .section-label {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 600;
+    font-size: 15px;
+    color: #1a1a1a;
+  }
+
+  .section-hint {
+    font-size: 11px;
+    color: #bbb;
+    font-style: italic;
+  }
+
+  .region-bars {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    margin-bottom: 8px;
+    position: relative;
+  }
+
+  .natl-line {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 2.5px;
+    background: #ec7700;
+    border-radius: 2px;
+    z-index: 3;
+    pointer-events: none;
+    box-shadow: 0 0 0 2px rgba(255,255,255,0.95);
+  }
+
+  .natl-line-label {
+    position: absolute;
+    top: -20px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 10px;
+    color: #ec7700;
+    font-weight: 600;
+    white-space: nowrap;
+    font-family: 'Open Sans', sans-serif;
+  }
+
+  .natl-line-price {
+    position: absolute;
+    bottom: -20px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 10px;
+    color: #ec7700;
+    font-weight: 600;
+    white-space: nowrap;
+    font-family: 'Montserrat', sans-serif;
+  }
+
+  /* — Bar rows — */
+  .region-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: default;
+    padding: 8px 8px;
+    border-radius: 8px;
+    transition: background 0.18s ease, transform 0.15s ease;
+    position: relative;
+  }
+
+  .region-row:hover {
+    background: rgba(74,139,44,0.05);
+    transform: translateX(2px);
+  }
+
+  .region-row:hover .bar-fill {
+    filter: brightness(1.08) saturate(1.1);
+    box-shadow: 0 1px 4px rgba(74,139,44,0.25);
+  }
+
+  .region-row:hover .region-name {
+    color: #1a1a1a;
+  }
+
+  .region-row:hover .bar-value {
+    color: #1a1a1a;
+    font-weight: 700;
+  }
+
+  .region-name {
+    width: 140px;
+    font-size: 12px;
+    font-weight: 600;
+    text-align: right;
+    color: #666;
+    flex-shrink: 0;
+    transition: color 0.15s;
+  }
+
+  .bar-track {
+    flex: 1;
+    height: 26px;
+    background: #f3f4f6;
+    border-radius: 6px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .bar-fill {
+    height: 100%;
+    border-radius: 6px;
+    transition: width 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94), filter 0.18s, box-shadow 0.18s;
+    position: relative;
+  }
+
+  .bar-value {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    color: #555;
+    width: 58px;
+    flex-shrink: 0;
+    text-align: right;
+    transition: color 0.15s, font-weight 0.15s;
+  }
+
+  /* — Tooltip — */
+  .bar-tooltip {
+    position: absolute;
+    bottom: calc(100% + 10px);
+    left: 50%;
+    transform: translateX(-50%) scale(0.95);
+    background: #1a1a1a;
+    color: #fff;
+    padding: 12px 16px;
+    border-radius: 10px;
+    font-size: 12px;
+    line-height: 1.55;
+    white-space: nowrap;
+    z-index: 10;
+    pointer-events: none;
+    font-family: 'Open Sans', sans-serif;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+    opacity: 0;
+    transition: opacity 0.18s ease, transform 0.18s ease;
+  }
+
+  .bar-tooltip::after {
+    content: '';
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    border: 6px solid transparent;
+    border-top-color: #1a1a1a;
+  }
+
+  .region-row:hover .bar-tooltip {
+    opacity: 1;
+    transform: translateX(-50%) scale(1);
+  }
+
+  .tooltip-region {
+    font-weight: 700;
+    font-size: 13px;
+    margin-bottom: 4px;
+    letter-spacing: 0.01em;
+  }
+
+  .tooltip-price {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 6px;
+  }
+
+  .tooltip-divider {
+    height: 1px;
+    background: rgba(255,255,255,0.12);
+    margin: 6px 0;
+  }
+
+  .tooltip-delta {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11px;
+    font-weight: 500;
+  }
+
+  .tooltip-delta .arrow {
+    font-size: 13px;
+    line-height: 1;
+  }
+
+  .tooltip-delta.above { color: #ffa3a3; }
+  .tooltip-delta.above .arrow { color: #ff7070; }
+  .tooltip-delta.below { color: #7ee89b; }
+  .tooltip-delta.below .arrow { color: #4edc72; }
+
+  /* — Rank badge — */
+  .rank-badge {
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: #eef0f2;
+    color: #999;
+    font-size: 10px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    font-family: 'Montserrat', sans-serif;
+    transition: background 0.15s, color 0.15s;
+  }
+
+  .region-row:hover .rank-badge {
+    background: #4a8b2c;
+    color: #fff;
+  }
+
+  /* — Footer — */
+  .footer-note {
+    font-size: 11px;
+    color: #aaa;
+    margin-top: 8px;
+    padding-top: 10px;
+    border-top: 1px solid #eef0f2;
+    text-align: left;
+  }
+
+  .loading-msg {
+    text-align: center;
+    padding: 60px 0;
+    color: #bbb;
+    font-size: 13px;
+  }
+
+  /* — Entrance animation — */
+  @keyframes fadeSlideUp {
+    from { opacity: 0; transform: translateY(12px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .animate-in {
+    animation: fadeSlideUp 0.45s ease-out both;
+  }
+
+  /* ── Mobile ── */
+  @media (max-width: 640px) {
+    .container { padding: 16px 14px 14px; border-radius: 0; }
+    h1 { font-size: 18px; }
+    .subtitle { font-size: 12px; }
+    .header-row { flex-direction: column; gap: 2px; }
+    .kpi-row { gap: 8px; }
+    .kpi { padding: 10px 12px; min-width: 0; flex: 1; }
+    .kpi-label { font-size: 9px; letter-spacing: 0.5px; }
+    .kpi-value { font-size: 22px; }
+    .kpi-detail { font-size: 10px; }
+    .legend-row { gap: 14px; flex-wrap: wrap; }
+    .legend-item { font-size: 11px; }
+    .chart-wrap { height: 220px; }
+    .range-slider-wrap { height: 40px; }
+    .range-mini-canvas { height: 26px; }
+    .range-overlay { height: 26px; }
+    .range-date-labels { font-size: 9px; }
+    .section-header { flex-direction: column; gap: 2px; }
+    .section-label { font-size: 13px; }
+    .section-hint { font-size: 10px; }
+    .region-row { gap: 6px; padding: 6px 4px; }
+    .region-name { width: 100px; font-size: 11px; }
+    .bar-value { font-size: 12px; width: 50px; }
+    .rank-badge { width: 18px; height: 18px; font-size: 10px; }
+    .natl-line-label { font-size: 9px; }
+    .natl-line-price { font-size: 9px; }
+    .footer-note { font-size: 10px; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="header-row">
+    <h1>U.S. Diesel Price Outlook</h1>
+  </div>
+  <div class="subtitle">Weekly retail actuals &amp; EIA Short-Term Energy Outlook forecast</div>
+
+  <div class="kpi-row" id="kpis">
+    <div class="kpi">
+      <span class="kpi-label">Current Week</span>
+      <span class="kpi-value actual" id="kpi-current">—</span>
+      <span class="kpi-detail" id="kpi-current-date"></span>
+    </div>
+    <div class="kpi">
+      <span class="kpi-label">2026 Forecast Avg</span>
+      <span class="kpi-value forecast" id="kpi-forecast">—</span>
+      <span class="kpi-detail">STEO monthly average</span>
+    </div>
+  </div>
+
+  <div class="chart-section">
+    <div class="legend-row">
+      <div class="legend-item">
+        <div class="legend-swatch" style="background:#4a8b2c;"></div>
+        Weekly actual
+      </div>
+      <div class="legend-item">
+        <div class="legend-swatch dashed"></div>
+        STEO forecast
+      </div>
+    </div>
+
+    <div class="chart-wrap">
+      <canvas id="mainChart"></canvas>
+    </div>
+    <div class="range-slider-wrap" id="rangeSlider">
+      <canvas class="range-mini-canvas" id="miniChart"></canvas>
+      <div class="range-overlay" id="rangeOverlay">
+        <div class="range-mask-left" id="maskLeft"></div>
+        <div class="range-window" id="rangeWindow">
+          <div class="range-handle range-handle-left" id="handleLeft"></div>
+          <div class="range-handle range-handle-right" id="handleRight"></div>
+        </div>
+        <div class="range-mask-right" id="maskRight"></div>
+      </div>
+      <div class="range-date-labels">
+        <span id="rangeLabelStart"></span>
+        <span id="rangeLabelEnd"></span>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-divider"></div>
+
+  <div class="section-header">
+    <div class="section-label">Regional Diesel Prices — Most Recent Week</div>
+    <div class="section-hint">Hover for details</div>
+  </div>
+  <div class="region-bars" id="regionBars">
+    <div class="loading-msg">Loading regional data…</div>
+  </div>
+
+  <div class="footer-note">Source: U.S. Energy Information Administration — updated <span id="updated"></span></div>
+</div>
+
+<script>
+const API_KEY = '__EIA_API_KEY__';
+
+const PADD_LABELS = {
+  NUS: 'U.S. Average',
+  R10: 'East Coast (PADD 1)',
+  R20: 'Midwest (PADD 2)',
+  R30: 'Gulf Coast (PADD 3)',
+  R40: 'Rocky Mtn (PADD 4)',
+  R50: 'West Coast (PADD 5)',
+  SCA: 'California'
+};
+
+const FALLBACK_ACTUALS = [
+  {period:'2025-06',value:3.553},{period:'2025-07',value:3.790},{period:'2025-08',value:3.717},
+  {period:'2025-09',value:3.746},{period:'2025-10',value:3.616},{period:'2025-11',value:3.812},
+  {period:'2025-12',value:3.607},{period:'2026-01',value:3.477},{period:'2026-02',value:3.688},
+  {period:'2026-03',value:4.859},{period:'2026-04',value:5.597},{period:'2026-05',value:5.554},
+  {period:'2026-06',value:5.280}
+];
+const FALLBACK_FORECAST = [
+  {period:'2025-06',value:3.60},{period:'2025-07',value:3.78},{period:'2025-08',value:3.74},{period:'2025-09',value:3.75},
+  {period:'2025-10',value:3.68},{period:'2025-11',value:3.82},{period:'2025-12',value:3.61},
+  {period:'2026-01',value:3.52},{period:'2026-02',value:3.72},{period:'2026-03',value:4.92},
+  {period:'2026-04',value:5.50},{period:'2026-05',value:5.60},{period:'2026-06',value:5.50},
+  {period:'2026-07',value:5.33},{period:'2026-08',value:5.15},{period:'2026-09',value:5.00},
+  {period:'2026-10',value:4.90},{period:'2026-11',value:4.84},{period:'2026-12',value:4.63}
+];
+// Regional fallback — EIA weekly on-highway diesel, week of 2026-08-31.
+// Source: eia.gov/petroleum/gasdiesel (release 2026-09-01). Refresh this when
+// the quarter's report is prepared; it is what renders if the EIA call fails.
+const FALLBACK_REGIONS = [
+  {area:'SCA',value:7.218},{area:'R50',value:6.497},{area:'NUS',value:5.599},
+  {area:'R20',value:5.571},{area:'R40',value:5.555},{area:'R10',value:5.448},{area:'R30',value:5.360}
+];
+
+function buildUrl(base, params) {
+  const u = new URL(base);
+  for (const [k,v] of Object.entries(params)) {
+    if (Array.isArray(v)) v.forEach(item => u.searchParams.append(k, item));
+    else u.searchParams.set(k, v);
+  }
+  return u.toString();
+}
+
+async function fetchActuals() {
+  const url = buildUrl('https://api.eia.gov/v2/petroleum/pri/gnd/data/', {
+    api_key: API_KEY,
+    frequency: 'weekly',
+    'data[0]': 'value',
+    'facets[product][]': 'EPD2D',
+    'facets[process][]': 'PTE',
+    'facets[duoarea][]': ['NUS','R10','R20','R30','R40','R50','SCA'],
+    start: '2025-06-01',
+    'sort[0][column]': 'period',
+    'sort[0][direction]': 'asc',
+    length: '5000'
+  });
+  const res = await fetch(url);
+  if (!res.ok) throw new Error('Actuals fetch failed');
+  return (await res.json()).response.data;
+}
+
+async function fetchForecast() {
+  const url = buildUrl('https://api.eia.gov/v2/steo/data/', {
+    api_key: API_KEY,
+    frequency: 'monthly',
+    'data[0]': 'value',
+    'facets[seriesId][]': 'DSRTUUS',
+    'sort[0][column]': 'period',
+    'sort[0][direction]': 'asc',
+    length: '500'
+  });
+  const res = await fetch(url);
+  if (!res.ok) throw new Error('STEO fetch failed');
+  return (await res.json()).response.data;
+}
+
+function fmt(v) { return '$' + Number(v).toFixed(3); }
+function fmtShort(v) { return '$' + Number(v).toFixed(2); }
+
+function renderRegionBars(regions, natlValue) {
+  const container = document.getElementById('regionBars');
+  const maxVal = Math.max(...regions.map(r => r.value)) * 1.08;
+
+  const bars = regions.map((r, i) => {
+    const pct = (r.value / maxVal * 100).toFixed(1);
+    const delta = r.value - natlValue;
+    const deltaSign = delta >= 0 ? '+' : '';
+    const deltaClass = delta >= 0 ? 'above' : 'below';
+    const deltaLabel = delta >= 0 ? 'above' : 'below';
+    const arrow = delta >= 0 ? '&#9650;' : '&#9660;';
+    const delay = (i * 0.06).toFixed(2);
+    return `
+      <div class="region-row animate-in" style="animation-delay:${delay}s">
+        <span class="rank-badge">${i + 1}</span>
+        <span class="region-name">${PADD_LABELS[r.area] || r.area}</span>
+        <div class="bar-track">
+          <div class="bar-fill" style="width:${pct}%;background:#4a8b2c;"></div>
+        </div>
+        <span class="bar-value">${fmt(r.value)}</span>
+        <div class="bar-tooltip">
+          <div class="tooltip-region">${PADD_LABELS[r.area] || r.area}</div>
+          <div class="tooltip-price">${fmt(r.value)}</div>
+          <div class="tooltip-divider"></div>
+          <div class="tooltip-delta ${deltaClass}">
+            <span class="arrow">${arrow}</span>
+            ${fmt(Math.abs(delta))} ${deltaLabel} U.S. avg (${fmtShort(natlValue)})
+          </div>
+        </div>
+      </div>`;
+  }).join('');
+
+  const nameWidth = 140;
+  const rankWidth = 22;
+  const gaps = 30;
+  const valueWidth = 58;
+  const rowPadding = 16;
+  const containerWidth = container.offsetWidth || 900;
+  const trackWidth = containerWidth - rankWidth - nameWidth - gaps - valueWidth - rowPadding;
+  const natlPx = (natlValue / maxVal) * trackWidth;
+  const lineLeft = rowPadding / 2 + rankWidth + 10 + nameWidth + 10 + natlPx;
+
+  container.innerHTML = bars +
+    `<div class="natl-line" style="left:${lineLeft}px;">
+      <span class="natl-line-label">U.S. Avg</span>
+      <span class="natl-line-price">${fmt(natlValue)}</span>
+    </div>`;
+}
+
+function initRangeSlider(mainChart, allLabels, actualData, forecastData) {
+  const miniCtx = document.getElementById('miniChart').getContext('2d');
+
+  new Chart(miniCtx, {
+    type: 'line',
+    data: {
+      labels: allLabels,
+      datasets: [
+        {
+          data: actualData,
+          borderColor: 'rgba(74,139,44,0.5)',
+          backgroundColor: 'rgba(74,139,44,0.08)',
+          borderWidth: 1.5,
+          pointRadius: 0,
+          fill: true,
+          tension: 0.3,
+          spanGaps: false
+        },
+        {
+          data: forecastData,
+          borderColor: 'rgba(236,119,0,0.5)',
+          borderWidth: 1.5,
+          borderDash: [4, 3],
+          pointRadius: 0,
+          fill: false,
+          tension: 0.3,
+          spanGaps: true
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: { legend: { display: false }, tooltip: { enabled: false } },
+      scales: {
+        x: { display: false },
+        y: { display: false }
+      },
+      animation: false
+    }
+  });
+
+  const slider = document.getElementById('rangeSlider');
+  const overlay = document.getElementById('rangeOverlay');
+  const win = document.getElementById('rangeWindow');
+  const maskL = document.getElementById('maskLeft');
+  const maskR = document.getElementById('maskRight');
+  const hLeft = document.getElementById('handleLeft');
+  const hRight = document.getElementById('handleRight');
+  const lblStart = document.getElementById('rangeLabelStart');
+  const lblEnd = document.getElementById('rangeLabelEnd');
+
+  const totalCount = allLabels.length;
+  let rangeStart = 0;
+  let rangeEnd = 1;
+  const minWindowFrac = 8 / totalCount;
+
+  function fmtLabel(idx) {
+    const lbl = allLabels[Math.min(Math.max(Math.round(idx), 0), totalCount - 1)];
+    const d = new Date(lbl + '-01T00:00:00');
+    if (isNaN(d)) return lbl;
+    return d.toLocaleDateString('en-US', { month: 'short', year: '2-digit' });
+  }
+
+  function applyRange() {
+    const sliderW = overlay.offsetWidth;
+    const l = rangeStart * sliderW;
+    const r = rangeEnd * sliderW;
+    maskL.style.width = l + 'px';
+    maskR.style.width = (sliderW - r) + 'px';
+    win.style.left = l + 'px';
+    win.style.width = (r - l) + 'px';
+
+    const iStart = Math.round(rangeStart * (totalCount - 1));
+    const iEnd = Math.round(rangeEnd * (totalCount - 1));
+
+    lblStart.textContent = fmtLabel(iStart);
+    lblEnd.textContent = fmtLabel(iEnd);
+
+    mainChart.options.scales.x.min = allLabels[iStart];
+    mainChart.options.scales.x.max = allLabels[iEnd];
+    mainChart.update('none');
+  }
+
+  applyRange();
+
+  let dragType = null;
+  let dragStartX = 0;
+  let dragStartRange = [0, 1];
+
+  function onPointerDown(e, type) {
+    e.preventDefault();
+    e.stopPropagation();
+    dragType = type;
+    dragStartX = e.clientX;
+    dragStartRange = [rangeStart, rangeEnd];
+    document.addEventListener('pointermove', onPointerMove);
+    document.addEventListener('pointerup', onPointerUp);
+  }
+
+  function onPointerMove(e) {
+    const sliderW = overlay.offsetWidth;
+    const dx = (e.clientX - dragStartX) / sliderW;
+
+    if (dragType === 'window') {
+      const span = dragStartRange[1] - dragStartRange[0];
+      let newStart = dragStartRange[0] + dx;
+      newStart = Math.max(0, Math.min(newStart, 1 - span));
+      rangeStart = newStart;
+      rangeEnd = newStart + span;
+    } else if (dragType === 'left') {
+      rangeStart = Math.max(0, Math.min(dragStartRange[0] + dx, rangeEnd - minWindowFrac));
+    } else if (dragType === 'right') {
+      rangeEnd = Math.min(1, Math.max(dragStartRange[1] + dx, rangeStart + minWindowFrac));
+    }
+    applyRange();
+  }
+
+  function onPointerUp() {
+    dragType = null;
+    document.removeEventListener('pointermove', onPointerMove);
+    document.removeEventListener('pointerup', onPointerUp);
+  }
+
+  win.addEventListener('pointerdown', e => onPointerDown(e, 'window'));
+  hLeft.addEventListener('pointerdown', e => onPointerDown(e, 'left'));
+  hRight.addEventListener('pointerdown', e => onPointerDown(e, 'right'));
+
+  maskL.addEventListener('click', e => {
+    const sliderW = overlay.offsetWidth;
+    const frac = e.offsetX / sliderW;
+    const span = rangeEnd - rangeStart;
+    rangeStart = Math.max(0, frac - span / 2);
+    rangeEnd = rangeStart + span;
+    if (rangeEnd > 1) { rangeEnd = 1; rangeStart = rangeEnd - span; }
+    applyRange();
+  });
+
+  maskR.addEventListener('click', e => {
+    const sliderW = overlay.offsetWidth;
+    const frac = (maskR.offsetLeft + e.offsetX) / sliderW;
+    const span = rangeEnd - rangeStart;
+    rangeStart = Math.max(0, frac - span / 2);
+    rangeEnd = rangeStart + span;
+    if (rangeEnd > 1) { rangeEnd = 1; rangeStart = rangeEnd - span; }
+    applyRange();
+  });
+}
+
+async function init() {
+  let rawActuals, rawForecast;
+  let usedFallback = false;
+
+  try {
+    [rawActuals, rawForecast] = await Promise.all([fetchActuals(), fetchForecast()]);
+  } catch (e) {
+    console.warn('EIA API unavailable, using fallback data:', e);
+    usedFallback = true;
+  }
+
+  let nationalWeekly;
+  if (!usedFallback) {
+    const nusRows = rawActuals.filter(d => d.duoarea === 'NUS' && d.value != null);
+    nationalWeekly = nusRows.map(d => ({ period: d.period, value: Number(d.value) }));
+  } else {
+    nationalWeekly = FALLBACK_ACTUALS;
+  }
+  nationalWeekly.sort((a,b) => a.period.localeCompare(b.period));
+
+  // Aggregate weekly actuals into monthly averages
+  const monthBuckets = {};
+  nationalWeekly.forEach(d => {
+    const m = d.period.slice(0, 7);
+    if (!monthBuckets[m]) monthBuckets[m] = [];
+    monthBuckets[m].push(d.value);
+  });
+  const nationalMonthly = Object.entries(monthBuckets)
+    .map(([m, vals]) => ({ period: m, value: vals.reduce((s,v) => s + v, 0) / vals.length }))
+    .sort((a,b) => a.period.localeCompare(b.period));
+
+  let forecastMonthly;
+  if (!usedFallback) {
+    forecastMonthly = rawForecast
+      .filter(d => d.value != null)
+      .map(d => ({ period: d.period, value: Number(d.value) / 100 }));
+  } else {
+    forecastMonthly = FALLBACK_FORECAST;
+  }
+  forecastMonthly.sort((a,b) => a.period.localeCompare(b.period));
+
+  const lastActualMonth = nationalMonthly[nationalMonthly.length - 1]?.period || '';
+  const futureForecasts = forecastMonthly.filter(f => f.period > lastActualMonth && f.period <= '2026-12');
+  const fc2026 = forecastMonthly.filter(f => f.period.startsWith('2026'));
+  const avg2026 = fc2026.length
+    ? (fc2026.reduce((s,d) => s + d.value, 0) / fc2026.length)
+    : null;
+
+  // — KPIs —
+  const lastActual = nationalMonthly[nationalMonthly.length - 1];
+  const lastWeekly = nationalWeekly[nationalWeekly.length - 1];
+  document.getElementById('kpi-current').textContent = lastWeekly ? fmt(lastWeekly.value) : '—';
+  document.getElementById('kpi-current-date').textContent = lastWeekly
+    ? `Week of ${new Date(lastWeekly.period + 'T00:00:00').toLocaleDateString('en-US', {month:'short', day:'numeric', year:'numeric'})}`
+    : '';
+  document.getElementById('kpi-forecast').textContent = avg2026 ? fmt(avg2026) : '—';
+  document.getElementById('updated').textContent = new Date().toLocaleDateString('en-US', {month:'short', day:'numeric', year:'numeric'});
+
+  // — Build combined labels & datasets —
+  const allLabels = [
+    ...nationalMonthly.map(d => d.period),
+    ...futureForecasts.map(d => d.period)
+  ];
+
+  const actualData = nationalMonthly.map(d => d.value);
+  const forecastData = new Array(nationalMonthly.length).fill(null);
+
+  // Connect forecast to the last actual point for a seamless handoff
+  if (nationalMonthly.length > 0) {
+    forecastData[forecastData.length - 1] = lastActual.value;
+  }
+  futureForecasts.forEach(d => forecastData.push(d.value));
+  while (actualData.length < allLabels.length) actualData.push(null);
+
+  // — Main chart —
+  const ctx = document.getElementById('mainChart').getContext('2d');
+
+  const gradient = ctx.createLinearGradient(0, 0, 0, 320);
+  gradient.addColorStop(0, 'rgba(74,139,44,0.15)');
+  gradient.addColorStop(1, 'rgba(74,139,44,0.01)');
+
+  const forecastGradient = ctx.createLinearGradient(0, 0, 0, 320);
+  forecastGradient.addColorStop(0, 'rgba(236,119,0,0.10)');
+  forecastGradient.addColorStop(1, 'rgba(236,119,0,0.01)');
+
+  const mainChart = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: allLabels,
+      datasets: [
+        {
+          label: 'Weekly Retail Diesel',
+          data: actualData,
+          borderColor: '#4a8b2c',
+          backgroundColor: gradient,
+          borderWidth: 2.5,
+          pointRadius: 0,
+          pointHoverRadius: 5,
+          pointHoverBackgroundColor: '#4a8b2c',
+          pointHoverBorderColor: '#fff',
+          pointHoverBorderWidth: 2,
+          pointHitRadius: 8,
+          fill: true,
+          tension: 0.3,
+          spanGaps: false
+        },
+        {
+          label: 'STEO Forecast',
+          data: forecastData,
+          borderColor: '#ec7700',
+          backgroundColor: forecastGradient,
+          borderWidth: 2.5,
+          borderDash: [7, 4],
+          pointRadius: 0,
+          pointHoverRadius: 5,
+          pointHoverBackgroundColor: '#ec7700',
+          pointHoverBorderColor: '#fff',
+          pointHoverBorderWidth: 2,
+          pointHitRadius: 8,
+          fill: true,
+          tension: 0.3,
+          spanGaps: true
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      interaction: { mode: 'index', intersect: false },
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          backgroundColor: '#1a1a1a',
+          titleFont: { family: 'Open Sans', size: 12, weight: '500' },
+          bodyFont: { family: 'Montserrat', size: 14, weight: '600' },
+          padding: { top: 10, bottom: 10, left: 14, right: 14 },
+          cornerRadius: 10,
+          displayColors: true,
+          boxWidth: 10,
+          boxHeight: 10,
+          boxPadding: 4,
+          callbacks: {
+            title: items => {
+              const lbl = items[0].label;
+              const d = new Date(lbl + '-01T00:00:00');
+              return d.toLocaleDateString('en-US', {month:'long', year:'numeric'});
+            },
+            label: item => ` ${item.dataset.label}:  ${fmt(item.raw)}`
+          }
+        },
+        annotation: {
+          annotations: avg2026 ? {
+            forecastAvgLine: {
+              type: 'line',
+              yMin: avg2026,
+              yMax: avg2026,
+              borderColor: 'rgba(236,119,0,0.3)',
+              borderWidth: 1,
+              borderDash: [4, 4],
+              label: {
+                display: true,
+                content: `2026 Avg ${fmt(avg2026)}`,
+                position: 'start',
+                backgroundColor: 'rgba(236,119,0,0.1)',
+                color: '#ec7700',
+                font: { size: 10, family: 'Open Sans', weight: '600' },
+                padding: { top: 3, bottom: 3, left: 6, right: 6 },
+                borderRadius: 4
+              }
+            }
+          } : {}
+        }
+      },
+      scales: {
+        x: {
+          type: 'category',
+          ticks: {
+            maxTicksLimit: 10,
+            font: { family: 'Open Sans', size: 11 },
+            color: '#bbb',
+            callback: function(value, index) {
+              const lbl = this.getLabelForValue(value);
+              const d = new Date(lbl + '-01T00:00:00');
+              if (isNaN(d)) return lbl;
+              return d.toLocaleDateString('en-US', {month:'short', year:'2-digit'});
+            }
+          },
+          grid: { display: false },
+          border: { display: false }
+        },
+        y: {
+          ticks: {
+            font: { family: 'Open Sans', size: 11 },
+            color: '#bbb',
+            callback: v => '$' + v.toFixed(2),
+            padding: 8
+          },
+          grid: { color: 'rgba(0,0,0,0.04)', drawBorder: false },
+          border: { display: false }
+        }
+      }
+    }
+  });
+
+  // — Mini chart + range slider —
+  initRangeSlider(mainChart, allLabels, actualData, forecastData);
+
+  // — Regional bars —
+  let regions;
+  if (!usedFallback) {
+    const latestPeriod = rawActuals
+      .filter(d => d.duoarea !== 'NUS' && d.value != null)
+      .reduce((max, d) => d.period > max ? d.period : max, '');
+    const latestRows = rawActuals.filter(d => d.period === latestPeriod && d.value != null);
+    regions = latestRows
+      .map(d => ({ area: d.duoarea, value: Number(d.value) }))
+      .filter(d => d.area !== 'NUS')
+      .sort((a,b) => b.value - a.value);
+    const nusRow = latestRows.find(d => d.duoarea === 'NUS');
+    var natlVal = nusRow ? Number(nusRow.value) : (lastActual?.value || 3.49);
+  } else {
+    regions = FALLBACK_REGIONS.filter(d => d.area !== 'NUS').sort((a,b) => b.value - a.value);
+    var natlVal = FALLBACK_REGIONS.find(d => d.area === 'NUS')?.value || 3.49;
+  }
+
+  renderRegionBars(regions, natlVal);
+}
+
+init();
+</script>
+</body>
+</html>

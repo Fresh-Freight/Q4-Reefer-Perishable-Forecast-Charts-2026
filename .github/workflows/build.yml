@@ -101,6 +101,23 @@ jobs:
           cp charts/reefer-load-to-truck-ratio/index.html docs/reefer-load-to-truck-ratio/index.html
 
       # ─────────────────────────────────────────────────────────────
+      # diesel-price-outlook  (EIA v2; key injected into the staged copy)
+      # ─────────────────────────────────────────────────────────────
+      - name: Stage — diesel-price-outlook
+        env:
+          # Optional. Without it the page still renders, using the baked
+          # fallback dataset rather than live EIA data, and the script warns
+          # instead of failing.
+          EIA_API_KEY: ${{ secrets.EIA_API_KEY }}
+        run: |
+          mkdir -p docs/diesel-price-outlook
+          cp charts/diesel-price-outlook/docs/index.html docs/diesel-price-outlook/index.html
+          # Inject into the STAGED copy, never the tracked source, so the real
+          # key cannot end up in a commit.
+          python charts/diesel-price-outlook/scripts/inject_key.py \
+            docs/diesel-price-outlook/index.html
+
+      # ─────────────────────────────────────────────────────────────
       # Landing page
       # ─────────────────────────────────────────────────────────────
       - name: Stage landing page
