@@ -8,12 +8,13 @@ const COUNTIES_URL = "https://cdn.jsdelivr.net/npm/us-atlas@3/counties-10m.json"
 const DATA_URL = "data/christmas_trees.json";
 const W = 960, H = 600;
 
-const SPIKE_HALF = 2.8;      // half-width of a spike base (px)
-const MAX_HEIGHT = 120;      // tallest spike (px), for the biggest county
-const MIN_HEIGHT = 2.5;      // floor so tiny producers still show
+const SPIKE_HALF = 3.4;      // half-width of a spike base (px)
+const MAX_HEIGHT = 150;      // tallest spike (px), for the biggest county
+const MIN_HEIGHT = 3;        // floor so tiny producers still show
+const TOP_PAD = 90;          // headroom above the map so tall spikes don't clip
 const LEGEND_VALUES = [25000, 250000, 1000000, 2000000];
 
-const svg = d3.select("#map").attr("viewBox", `0 0 ${W} ${H}`).attr("preserveAspectRatio", "xMidYMid meet");
+const svg = d3.select("#map").attr("viewBox", `0 ${-TOP_PAD} ${W} ${H + TOP_PAD}`).attr("preserveAspectRatio", "xMidYMid meet");
 const tooltip = document.getElementById("tooltip");
 const mapWrap = document.querySelector(".map-wrap");
 
