@@ -13,18 +13,6 @@ const MAX_HEIGHT = 120;      // tallest spike (px), for the biggest county
 const MIN_HEIGHT = 2.5;      // floor so tiny producers still show
 const LEGEND_VALUES = [25000, 250000, 1000000, 2000000];
 
-// Notable counties to call out with a label (mirrors the maps.com callouts).
-const CALLOUTS = [
-  { fips: "41005", dx: 0,  anchor: "middle" }, // Clackamas, OR
-  { fips: "37009", dx: 6,  anchor: "start" },  // Ashe, NC
-  { fips: "26113", dx: 0,  anchor: "middle" }, // Missaukee, MI
-  { fips: "55053", dx: -6, anchor: "end" },    // Jackson, WI
-  { fips: "37099", dx: 8,  anchor: "start" },  // Jackson, NC
-  { fips: "06073", dx: -6, anchor: "end" },    // San Diego, CA
-  { fips: "12003", dx: 8,  anchor: "start" },  // Baker, FL
-  { fips: "15001", dx: 0,  anchor: "middle" }, // Hawaii, HI
-];
-
 const svg = d3.select("#map").attr("viewBox", `0 0 ${W} ${H}`).attr("preserveAspectRatio", "xMidYMid meet");
 const tooltip = document.getElementById("tooltip");
 const mapWrap = document.querySelector(".map-wrap");
@@ -75,7 +63,6 @@ Promise.all([d3.json(COUNTIES_URL), d3.json(DATA_URL)])
         .on("pointermove", (event, o) => showTip(event, o))
         .on("pointerleave", () => { tooltip.hidden = true; });
 
-    drawCallouts(producers, hScale);
     drawSizeLegend(hScale);
 
     function showTip(event, o) {
@@ -93,21 +80,6 @@ Promise.all([d3.json(COUNTIES_URL), d3.json(DATA_URL)])
       tooltip.style.top = y + "px";
     }
 
-    function drawCallouts(prods, hs) {
-      const byFips = new Map(prods.map((o) => [fips5(o.d.id), o]));
-      const g = svg.append("g").attr("class", "callouts");
-      for (const co of CALLOUTS) {
-        const o = byFips.get(co.fips);
-        if (!o) continue;
-        const h = Math.max(MIN_HEIGHT, hs(o.v));
-        const x = o.c[0] + co.dx, y = o.c[1] - h - 6; // just above the tip
-        const t = g.append("text").attr("class", "callout").attr("text-anchor", co.anchor)
-          .attr("x", x).attr("y", y);
-        t.append("tspan").attr("class", "co-name").attr("x", x).text(names[co.fips]);
-        t.append("tspan").attr("class", "co-val").attr("x", x).attr("dy", "1.15em")
-          .text(fmt(o.v) + " trees");
-      }
-    }
   })
   .catch((err) => {
     console.error("Failed to load map:", err);
