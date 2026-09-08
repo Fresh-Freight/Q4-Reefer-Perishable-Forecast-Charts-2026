@@ -1,8 +1,8 @@
 // Color ramp + legend definitions for the NOAA CPC seasonal outlook map.
 //
 // The map itself is driven entirely by the NOAA CPC contour polygons in
-// data/outlook-temp.geojson and data/outlook-precip.geojson (the OND 2026
-// Lead-2 seasonal outlook, pulled from NOAA's NWS ArcGIS service and
+// data/outlook-temp.geojson and data/outlook-precip.geojson (the SON 2026
+// Lead-1 seasonal outlook, pulled from NOAA's NWS ArcGIS service and
 // simplified for web). Each polygon carries a Cat field
 // (Above / Below / EC) and a Prob field whose value is the LOWER bound of the
 // NOAA probability band (33 → 33–40%, 40 → 40–50%, 50 → 50–60%, …).

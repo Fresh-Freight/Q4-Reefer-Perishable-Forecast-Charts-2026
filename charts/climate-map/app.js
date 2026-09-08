@@ -1,4 +1,4 @@
-// NOAA Q4 2026 Climate Outlook map
+// NOAA SON 2026 (Sep–Nov) Climate Outlook map
 // Renders NOAA CPC probability contour polygons directly (smooth zones that
 // flow across state boundaries the way NOAA's published seasonal outlook maps
 // do), with state outlines drawn on top as a light reference grid.

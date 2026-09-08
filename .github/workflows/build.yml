@@ -44,7 +44,7 @@ jobs:
           cp charts/usda-commodity-heatmap/docs/index.html docs/usda-commodity-heatmap/index.html
 
       # ─────────────────────────────────────────────────────────────
-      # climate-map  (static site; NOAA CPC OND seasonal outlook)
+      # climate-map  (static site; NOAA CPC SON seasonal outlook)
       # ─────────────────────────────────────────────────────────────
       - name: Stage — climate-map
         run: |
