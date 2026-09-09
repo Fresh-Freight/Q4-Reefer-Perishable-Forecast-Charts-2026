@@ -157,14 +157,11 @@ under `prefers-reduced-motion`.
 
 ---
 
-The legend has three states, because its glyphs and labels are fixed pixel sizes
-while the map is fluid:
-
-| Viewport | Legend |
-|---|---|
-| ≥ 900px | Overlaid on the map, in the empty Gulf of Mexico |
-| 620–900px | In the flow, directly beneath the map |
-| < 620px | Hidden — the reference glyphs are too small to compare against, and the chart view carries the exact figures |
+The legend sits in the flow beneath the map, and is hidden under 620px — at that
+size the reference glyphs are too small to compare against, and the chart view
+carries the exact figures anyway. It is deliberately **not** overlaid on the
+projection: its glyphs and labels are fixed pixel sizes while the map is fluid,
+so an overlay fits at some widths and rides up onto land at others.
 
 ---
 

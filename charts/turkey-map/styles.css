@@ -100,14 +100,12 @@ h1, h2, h3 { font-family: 'Montserrat', sans-serif; font-weight: 700; }
 }
 .hit:focus { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 3px; }
 
-/* Default: the legend sits in the flow under the map. The glyphs and labels are
-   fixed pixel sizes while the map is fluid, so it is only lifted onto the map
-   once the projection is wide enough to guarantee the Gulf gap can hold it —
-   see the min-width rule below. No background panel: it is parked in empty
-   ocean, so a plate would just cover the map. */
+/* The legend sits in the flow beneath the map. Its glyphs and labels are fixed
+   pixel sizes while the map is fluid, so overlaying it on the projection means
+   it fits at some widths and not others. */
 .legend {
   display: flex; flex-direction: column; align-items: flex-start; gap: 1px;
-  margin-top: 6px;
+  margin-top: 10px;
 }
 .legend .lg-title {
   font-size: 10.5px; font-weight: 600; color: var(--ink-muted);
@@ -171,12 +169,6 @@ h1, h2, h3 { font-family: 'Montserrat', sans-serif; font-weight: 700; }
 }
 
 .attribution { margin-top: 16px; font-size: 11px; color: var(--ink-muted); max-width: 720px; }
-
-/* Only lift the legend onto the map once the projection is wide enough that the
-   Gulf gap can hold it at its fixed pixel size. Below this it stays in the flow. */
-@media (min-width: 900px) {
-  .legend { position: absolute; left: 37%; bottom: 3%; margin-top: 0; }
-}
 
 @media (max-width: 620px) {
   .container { padding: 20px 14px 32px; }

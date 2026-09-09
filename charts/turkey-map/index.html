@@ -23,9 +23,6 @@
 
     <div class="map-wrap" id="view-stack">
       <svg id="map" role="img" aria-label="U.S. state map of turkey production, 2025"></svg>
-      <!-- Sits in the empty Gulf of Mexico area on wide screens; drops below the
-           map under 620px, where an overlay would be unreadable. -->
-      <div class="legend" id="legend"><span class="lg-title">Turkeys raised</span></div>
       <div class="tooltip" id="tooltip" hidden></div>
 
       <!-- Ranked view, shown in the map's place. Built as HTML rather than SVG so
@@ -36,6 +33,8 @@
         <p class="bars-note" id="bars-note"></p>
       </div>
     </div>
+
+    <div class="legend" id="legend"><span class="lg-title">Turkeys raised</span></div>
 
     <p class="attribution">
       Source: USDA National Agricultural Statistics Service — Turkeys Raised, 2025.
