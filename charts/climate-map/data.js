@@ -11,7 +11,8 @@
 //   above-strong   #3a6b22   (50%+ probability above-normal)
 //   above-moderate #7cb854   (40–50%)
 //   above-slight   #a8d490   (33–40%)
-//   near           #e5e5e5   (equal chances, 33%)
+//   near           #e5e5e5   (equal chances, 33%) — must equal
+//                            --base-state-fill in styles.css, see below
 //   below-slight   #ffd4a8   (33–40% below)
 //   below-moderate #f4a564   (40–50% below)
 //   below-strong   #ec7700   (50%+ below)
@@ -20,6 +21,9 @@ const COLOR_RAMP = {
   "above-strong":   "#3a6b22",
   "above-moderate": "#7cb854",
   "above-slight":   "#a8d490",
+  // Tied to --base-state-fill in styles.css: uncovered land must read as equal
+  // chances rather than as a lighter patch. Change both together. This grey is
+  // also the shared land tone across the Q4 map charts.
   "near":           "#e5e5e5",
   "below-slight":   "#ffd4a8",
   "below-moderate": "#f4a564",

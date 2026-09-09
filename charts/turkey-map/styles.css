@@ -8,7 +8,10 @@
   --accent-dark: #8c3f00;
   --accent-light: #fdf3e6;
   --agg: #c9b8a8;           /* aggregate rows — deliberately not the series hue */
-  --land: #eef2f0;
+  /* Shared base-map greys across the Q4 map charts: land in the climate map's
+     equal-chances grey, with white gutters between states. */
+  --land: #e5e5e5;
+  --state-line: #ffffff;
 }
 * { box-sizing: border-box; margin: 0; padding: 0; }
 html, body {
@@ -56,7 +59,7 @@ h1, h2, h3 { font-family: 'Montserrat', sans-serif; font-weight: 700; }
 .is-hidden { display: none !important; }
 
 .land { fill: var(--land); stroke: none; }
-.state-line { fill: none; stroke: #9aa1a8; stroke-width: 0.7; pointer-events: none; }
+.state-line { fill: none; stroke: var(--state-line); stroke-width: 0.8; pointer-events: none; }
 .flock { pointer-events: none; }
 /* Match the SVG transform attribute's own frame, so restating the transform in
    CSS below renders identically. */

@@ -12,8 +12,10 @@
   --text-muted: #8a8a8a;
   --border-soft: #d8d8d8;
   --state-stroke: #ffffff;
-  /* Same as equal-chances grey: land with no outlook zone reads as equal
-     chances, so neutral areas are uniform (no lighter base-land patches). */
+  /* The shared land tone across the Q4 map charts, with white gutters between
+     states. This MUST stay equal to COLOR_RAMP["near"] in data.js — land with
+     no outlook zone reads as equal chances, so neutral areas are uniform (no
+     lighter base-land patches). Move the two together or a seam appears. */
   --base-state-fill: #e5e5e5;
 }
 
@@ -129,14 +131,14 @@ html, body {
 
 .base-state {
   fill: var(--base-state-fill);
-  stroke: #c9c9c5;
-  stroke-width: 0.75;
+  stroke: var(--state-stroke);
+  stroke-width: 0.8;
 }
 
 .state-outline {
   fill: none;
-  stroke: #ffffff;
-  stroke-width: 0.75;
+  stroke: var(--state-stroke);
+  stroke-width: 0.8;
   pointer-events: none;
 }
 
