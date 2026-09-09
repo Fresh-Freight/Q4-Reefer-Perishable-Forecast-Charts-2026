@@ -174,8 +174,8 @@
 
   /* viz area with cross-fade between panes. The hidden pane goes out of flow
      so the container tracks the visible pane's height: the map is much taller
-     than the chart, and a shared grid cell would leave a dead band under the
-     chart the size of the map. */
+     than the table, and a shared grid cell would leave a dead band under the
+     table the size of the map. */
   .viz-area { position: relative; padding: 6px 0; }
   .viz-pane { opacity: 1; transition: opacity 300ms ease; }
   .viz-pane.hidden {
@@ -274,30 +274,6 @@
   .tooltip .tt-verdict { font-size: 11px; font-weight: 600; margin-top: 2px; }
   .tooltip .tt-n { font-size: 10.5px; color: #b3b4b3; margin-top: 3px; }
 
-  /* chart view */
-  .chart-svg { width: 100%; max-width: 84%; height: auto; display: block; margin: 0 auto; }
-  .chart-row-label {
-    font-family: 'Open Sans', Arial, sans-serif;
-    font-size: 12px; font-weight: 600; fill: var(--ink);
-  }
-  .chart-row-value {
-    font-family: 'Open Sans', Arial, sans-serif;
-    font-size: 12px; font-weight: 600; fill: var(--ink);
-    font-variant-numeric: tabular-nums;
-  }
-  .chart-bar { cursor: pointer; transition: opacity 120ms; }
-  .chart-bar:hover { opacity: 0.85; }
-  .chart-axis-line { stroke: #d9d9d9; stroke-width: 1; }
-  .chart-base-line { stroke: var(--ink-muted); stroke-width: 1; stroke-dasharray: 3 3; }
-  .chart-axis-text {
-    font-family: 'Open Sans', Arial, sans-serif;
-    font-size: 11px; font-weight: 600; fill: var(--ink-muted);
-  }
-  .chart-empty {
-    font-family: 'Open Sans', Arial, sans-serif;
-    font-size: 13px; fill: var(--ink-muted); text-anchor: middle;
-  }
-
   /* diverging legend above the map */
   .legend-horizontal {
     display: flex;
@@ -321,35 +297,9 @@
     font-size: 11px; font-weight: 600; color: var(--ink-muted);
     font-variant-numeric: tabular-nums; white-space: nowrap;
   }
-  .legend-center {
-    font-family: 'Montserrat', Arial, sans-serif;
-    font-size: 10px; font-weight: 600; letter-spacing: 0.08em;
-    text-transform: uppercase; color: var(--ink-muted); white-space: nowrap;
-  }
-  .legend-current {
-    font-family: 'Open Sans', Arial, sans-serif;
-    font-size: 10px; font-weight: 600; color: var(--ink-soft);
-    letter-spacing: 0.08em; text-transform: uppercase;
-    border-left: 1px solid var(--rule); padding-left: 14px; white-space: nowrap;
-  }
-  .legend-current strong {
-    display: block;
-    font-family: 'Montserrat', Arial, sans-serif;
-    font-size: 13px; font-weight: 700; color: var(--ink);
-    text-transform: none; letter-spacing: 0;
-    font-variant-numeric: tabular-nums; margin-top: 2px; line-height: 1.3;
-  }
 
   /* table view, so identity is never carried by color alone */
-  .table-toggle {
-    margin-top: 10px;
-    background: none; border: 0; padding: 0;
-    font-family: 'Open Sans', Arial, sans-serif;
-    font-size: 11.5px; font-weight: 600; color: var(--green);
-    cursor: pointer; text-decoration: underline; text-underline-offset: 3px;
-  }
-  .data-table { width: 100%; border-collapse: collapse; margin-top: 10px; }
-  .data-table[hidden] { display: none; }
+  .data-table { width: 100%; border-collapse: collapse; }
   .data-table th {
     font-family: 'Montserrat', Arial, sans-serif;
     font-size: 11px; font-weight: 600; text-align: left;
@@ -378,16 +328,15 @@
     .pill { padding: 6px 10px; font-size: 12px; }
     .ctrl-row { gap: 6px; }
     .viz-header { flex-direction: column; align-items: flex-start; gap: 8px; }
-    .map-container, .chart-svg { max-width: 100%; }
+    .map-container { max-width: 100%; }
     .legend-horizontal { flex-direction: column; align-items: flex-start; gap: 8px; padding: 8px 10px; }
     .legend-mid { min-width: 0; width: 100%; }
-    .legend-current { border-left: none; padding-left: 0; border-top: 1px solid var(--rule); padding-top: 8px; }
     .seg-btn { padding: 0 12px; font-size: 12px; }
     .source { font-size: 10px; }
   }
 
   @media print {
-    .controls, .viz-header, .table-toggle { display: none; }
+    .controls, .viz-header { display: none; }
     body { background: white; }
   }
 </style>
@@ -423,7 +372,7 @@
     <div class="viz-title">Regional capacity pressure</div>
     <div class="seg" role="tablist" aria-label="View toggle">
       <button class="seg-btn active" data-view="map" role="tab" aria-selected="true">Map</button>
-      <button class="seg-btn" data-view="chart" role="tab" aria-selected="false">Chart</button>
+      <button class="seg-btn" data-view="table" role="tab" aria-selected="false">Table</button>
     </div>
   </div>
 
@@ -434,8 +383,6 @@
         <div class="legend-bar-horiz" id="legendBar"></div>
         <span class="legend-ends-horiz">Shortage · 5</span>
       </div>
-      <div class="legend-center">Midpoint 3 · adequate</div>
-      <div class="legend-current" id="legendCurrent"></div>
     </div>
 
     <div class="viz-area">
@@ -451,17 +398,14 @@
           <div class="tooltip" id="tooltip"></div>
         </div>
       </div>
-      <div class="viz-pane hidden" id="chartPane" aria-hidden="true">
-        <svg class="chart-svg" id="chartSvg" viewBox="0 0 960 560" preserveAspectRatio="xMidYMid meet"></svg>
+      <div class="viz-pane hidden" id="tablePane" aria-hidden="true">
+        <table class="data-table" id="dataTable">
+          <thead><tr><th>Region</th><th class="num">Availability</th><th>Reading</th><th class="num">Reports</th></tr></thead>
+          <tbody id="dataTableBody"></tbody>
+        </table>
       </div>
     </div>
   </div>
-
-  <button class="table-toggle" id="tableToggle" aria-expanded="false" aria-controls="dataTable">Show data table</button>
-  <table class="data-table" id="dataTable" hidden>
-    <thead><tr><th>Region</th><th class="num">Availability</th><th>Reading</th><th class="num">Reports</th></tr></thead>
-    <tbody id="dataTableBody"></tbody>
-  </table>
 
   <div class="source" id="sourceLine">Source: USDA AMS Refrigerated Truck Rates and Availability</div>
 </div>
@@ -668,24 +612,13 @@ function bindViewToggle() {
       b.setAttribute("aria-selected", "true");
       currentView = b.dataset.view;
       const mapPane = document.getElementById("mapPane");
-      const chartPane = document.getElementById("chartPane");
+      const tablePane = document.getElementById("tablePane");
       const showMap = currentView === "map";
       mapPane.classList.toggle("hidden", !showMap);
       mapPane.setAttribute("aria-hidden", String(!showMap));
-      chartPane.classList.toggle("hidden", showMap);
-      chartPane.setAttribute("aria-hidden", String(showMap));
+      tablePane.classList.toggle("hidden", showMap);
+      tablePane.setAttribute("aria-hidden", String(showMap));
     });
-  });
-}
-
-function bindTableToggle() {
-  const btn = document.getElementById("tableToggle");
-  const table = document.getElementById("dataTable");
-  btn.addEventListener("click", () => {
-    const open = table.hasAttribute("hidden");
-    if (open) table.removeAttribute("hidden"); else table.setAttribute("hidden", "");
-    btn.setAttribute("aria-expanded", String(open));
-    btn.textContent = open ? "Hide data table" : "Show data table";
   });
 }
 
@@ -939,99 +872,6 @@ function renderMap() {
   });
 }
 
-// ═══════════════════════════════════════════════════════════════
-// CHART — diverging bars off the "adequate" midpoint
-// ═══════════════════════════════════════════════════════════════
-// Largest |mean - 3| across every period and month in the dataset, padded so
-// the widest bar does not run flush into its value label. Floored at 0.5 so a
-// uniformly adequate quarter does not blow tiny differences up into full-width
-// bars.
-let _maxDev = null;
-function maxDeviation() {
-  if (_maxDev != null) return _maxDev;
-  let m = 0;
-  for (const period of Object.values(data.stats || {})) {
-    for (const byMonth of Object.values(period)) {
-      for (const c of Object.values(byMonth)) {
-        if (c && c.mean != null) m = Math.max(m, Math.abs(c.mean - BASE));
-      }
-    }
-  }
-  _maxDev = Math.max(m + 0.12, 0.5);
-  return _maxDev;
-}
-
-function renderChart() {
-  const svg = d3.select("#chartSvg");
-  svg.selectAll("*").remove();
-
-  const rows = regionsWithData()
-    .map(r => ({ region: r, ...cell(r) }))
-    .sort((a, b) => b.mean - a.mean);
-
-  const W = 960, marginL = 150, marginR = 90, marginT = 44, marginB = 18;
-  const rowH = 26, gap = 8;
-  const H = Math.max(marginT + marginB + rows.length * (rowH + gap), 220);
-  svg.attr("viewBox", `0 0 ${W} ${H}`);
-
-  if (!rows.length) {
-    svg.append("text").attr("class", "chart-empty")
-      .attr("x", W / 2).attr("y", H / 2).text("No reports for this selection");
-    return;
-  }
-
-  const plotW = W - marginL - marginR;
-  const midX = marginL + plotW / 2;
-  // Bar length is scaled to the largest deviation anywhere in the dataset, not
-  // the largest in the current selection, so switching year or month never
-  // rescales the bars underneath the reader. Q4 deviations from "adequate" are
-  // small enough that the full 1-5 scale would render most regions as slivers.
-  const scale = d3.scaleLinear().domain([0, maxDeviation()]).range([0, plotW / 2]);
-  const dur = window.matchMedia("(prefers-reduced-motion: reduce)").matches ? 0 : 420;
-
-  svg.append("text").attr("class", "chart-axis-text")
-    .attr("x", marginL).attr("y", marginT - 22).text("← toward surplus (1)");
-  svg.append("text").attr("class", "chart-axis-text")
-    .attr("x", W - marginR).attr("y", marginT - 22)
-    .attr("text-anchor", "end").text("toward shortage (5) →");
-  svg.append("text").attr("class", "chart-axis-text")
-    .attr("x", midX).attr("y", marginT - 22)
-    .attr("text-anchor", "middle").text("adequate (3)");
-  svg.append("line").attr("class", "chart-axis-line")
-    .attr("x1", marginL).attr("x2", W - marginR)
-    .attr("y1", marginT - 12).attr("y2", marginT - 12);
-  svg.append("line").attr("class", "chart-base-line")
-    .attr("x1", midX).attr("x2", midX)
-    .attr("y1", marginT - 12).attr("y2", H - marginB);
-
-  rows.forEach((row, i) => {
-    const y = marginT + i * (rowH + gap);
-    const dev = row.mean - BASE;
-    const w = Math.max(scale(Math.abs(dev)), 3);
-    const x = dev >= 0 ? midX : midX - w;
-
-    svg.append("text").attr("class", "chart-row-label")
-      .attr("x", marginL - 12).attr("y", y + rowH / 2)
-      .attr("text-anchor", "end").attr("dominant-baseline", "central")
-      .text(row.region);
-
-    const bar = svg.append("rect").attr("class", "chart-bar")
-      .attr("x", midX).attr("y", y + 3)
-      .attr("width", 0).attr("height", rowH - 6)
-      .attr("rx", 4).attr("ry", 4)
-      .attr("fill", heatColor(row.mean));
-    bar.append("title")
-      .text(`${row.region} · ${row.mean.toFixed(2)} · ${verdict(row.mean)} · ${row.n.toLocaleString()} reports`);
-    bar.transition().duration(dur).attr("x", x).attr("width", w);
-
-    svg.append("text").attr("class", "chart-row-value")
-      .attr("x", dev >= 0 ? midX + w + 8 : midX - w - 8)
-      .attr("y", y + rowH / 2)
-      .attr("text-anchor", dev >= 0 ? "start" : "end")
-      .attr("dominant-baseline", "central")
-      .text(row.mean.toFixed(2));
-  });
-}
 
 // ═══════════════════════════════════════════════════════════════
 // LEGEND, TABLE, HEADER
@@ -1039,12 +879,6 @@ function renderChart() {
 function renderLegend() {
   document.getElementById("legendBar").innerHTML = BANDS
     .map(b => `<div style="background:var(${b.color})" title="${b.label}"></div>`).join("");
-
-  const withData = regionsWithData().map(r => ({ region: r, ...cell(r) }));
-  const tightest = withData.reduce((best, r) => (best && best.mean >= r.mean ? best : r), null);
-  document.getElementById("legendCurrent").innerHTML = tightest
-    ? `Tightest region · ${MONTH_LABEL[currentMonth]}<strong>${tightest.region} — ${tightest.mean.toFixed(2)} (${verdict(tightest.mean)})</strong>`
-    : `Tightest region · ${MONTH_LABEL[currentMonth]}<strong>No reports</strong>`;
 }
 
 function renderTable() {
@@ -1060,9 +894,10 @@ function renderTable() {
 function renderHeader() {
   document.getElementById("periodName").textContent =
     currentPeriod === "all" ? `(${YEARS.length}-Year Avg.)` : `(${currentPeriod})`;
-  const built = data.meta.built ? ` · built ${data.meta.built}` : "";
+  // meta.built is still recorded in the baked data as provenance; it just is
+  // not surfaced in the header.
   document.getElementById("metaLine").textContent =
-    `${YEARS[0]}-${YEARS[YEARS.length - 1]} Q4${built}`;
+    `${YEARS[0]}-${YEARS[YEARS.length - 1]} Q4`;
   document.getElementById("sourceLine").innerHTML =
     "Source: USDA AMS Refrigerated Truck Rates and Availability (Socrata acar-e3r8)." +
     (liveFetchFailed
@@ -1073,7 +908,6 @@ function renderHeader() {
 function renderAll() {
   renderHeader();
   if (statePaths) renderMap();
-  renderChart();
   renderLegend();
   renderTable();
 }
@@ -1085,7 +919,6 @@ function renderAll() {
   renderYearPills();
   bindMonthPills();
   bindViewToggle();
-  bindTableToggle();
   renderAll();
 
   try {
@@ -1100,7 +933,6 @@ function renderAll() {
 
   try {
     data = aggregate(await fetchLive());
-    _maxDev = null;
   } catch (e) {
     console.warn("Live USDA refresh failed, using the baked snapshot:", e);
     liveFetchFailed = true;
