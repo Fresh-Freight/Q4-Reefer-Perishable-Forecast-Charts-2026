@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Where Turkeys Are Raised — U.S. Production Map</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <main class="container">
+    <header class="header">
+      <h1>Where Turkeys Are Raised</h1>
+      <p class="subtitle">U.S. turkey production by state — <strong id="us-total">—</strong> birds raised in 2025, USDA NASS.</p>
+    </header>
+
+    <div class="controls">
+      <span class="ctrl-label" id="view-hint">Turkey size = birds raised, 2025 · hover or tab to a bird for state detail</span>
+      <button type="button" id="view-btn" class="view-btn" aria-pressed="false" aria-controls="view-stack">Show chart</button>
+    </div>
+
+    <div class="map-wrap" id="view-stack">
+      <svg id="map" role="img" aria-label="U.S. state map of turkey production, 2025"></svg>
+      <!-- Sits in the empty Gulf of Mexico area on wide screens; drops below the
+           map under 620px, where an overlay would be unreadable. -->
+      <div class="legend" id="legend"><span class="lg-title">Turkeys raised</span></div>
+      <div class="tooltip" id="tooltip" hidden></div>
+
+      <!-- Ranked view, shown in the map's place. Built as HTML rather than SVG so
+           the labels stay real text at every width instead of scaling with a
+           viewBox down to a few pixels on a phone. -->
+      <div class="bars" id="bars" hidden>
+        <ol class="bar-list" id="bar-list"></ol>
+        <p class="bars-note" id="bars-note"></p>
+      </div>
+    </div>
+
+    <p class="attribution">
+      Source: USDA National Agricultural Statistics Service — Turkeys Raised, 2025.
+    </p>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/d3@7/dist/d3.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/topojson-client@3/dist/topojson-client.min.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

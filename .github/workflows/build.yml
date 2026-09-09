@@ -66,6 +66,17 @@ jobs:
           cp -r charts/christmas-tree-map/data docs/christmas-tree-map/data
 
       # ─────────────────────────────────────────────────────────────
+      # turkey-map  (static; USDA NASS Turkeys Raised, baked data)
+      # ─────────────────────────────────────────────────────────────
+      - name: Stage — turkey-map
+        run: |
+          mkdir -p docs/turkey-map
+          cp charts/turkey-map/index.html charts/turkey-map/app.js \
+             charts/turkey-map/styles.css \
+             docs/turkey-map/
+          cp -r charts/turkey-map/data docs/turkey-map/data
+
+      # ─────────────────────────────────────────────────────────────
       # usda-truck-availability  (USDA AMS Socrata — public data)
       # ─────────────────────────────────────────────────────────────
       - name: Install deps — usda-truck-availability

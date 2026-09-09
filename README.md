@@ -9,8 +9,18 @@ Fresh Freight's Q4 (October–December) freight-market chart suite. Each chart l
 | Folder | Chart | Data source | Status |
 |--------|-------|-------------|--------|
 | `charts/usda-commodity-heatmap` | Q4 reefer volume heat map by USDA region | USDA AMS (Socrata `rfpn-7etz`) | ✅ live |
+| `charts/usda-truck-availability` | Reefer truck availability by USDA region | USDA AMS (Socrata) | ✅ live |
+| `charts/reefer-rates` | Spot vs. contract reefer rates | DAT RateView (hand-entered) | ✅ live |
+| `charts/reefer-load-to-truck-ratio` | Reefer load-to-truck ratio | DAT Trendlines (hand-entered) | ✅ live |
+| `charts/diesel-price-outlook` | Diesel actuals vs. STEO forecast | EIA v2 API | ✅ live |
+| `charts/climate-map` | NOAA CPC seasonal outlook (SON 2026) | NOAA CPC | ✅ live |
+| `charts/christmas-tree-map` | Christmas tree production by county | USDA 2022 Census of Ag | ✅ live |
+| `charts/turkey-map` | Turkey production by state | USDA NASS Turkeys Raised | ✅ live |
 
-_More charts (truck availability, reefer rates, load-to-truck ratio, diesel outlook, climate map) are added under `charts/` as they're built._
+Charts fall into three shapes: **fetched at build time** (Python — commodity
+heatmap, truck availability), **static with committed data** (JS + JSON —
+climate map, Christmas tree map, turkey map), and **fully hand-entered**
+(a single `index.html` — reefer rates, load-to-truck).
 
 ## How it publishes
 
