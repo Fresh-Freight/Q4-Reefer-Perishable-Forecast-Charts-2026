@@ -538,7 +538,7 @@
       <span class="kpi-detail" id="kpi-current-date"></span>
     </div>
     <div class="kpi">
-      <span class="kpi-label">2026 Forecast Avg</span>
+      <span class="kpi-label" id="kpi-forecast-label">Forecast Avg</span>
       <span class="kpi-value forecast" id="kpi-forecast">—</span>
       <span class="kpi-detail">STEO monthly average</span>
     </div>
@@ -634,6 +634,17 @@ function buildUrl(base, params) {
   return u.toString();
 }
 
+// Rolling history window. This was a fixed '2025-06-01', which meant the chart
+// accumulated more history every week and drifted further from the present.
+// Measuring back from today keeps the span constant and the view anchored to now.
+const HISTORY_MONTHS = 15;
+function historyStart() {
+  const d = new Date();
+  d.setUTCDate(1);
+  d.setUTCMonth(d.getUTCMonth() - HISTORY_MONTHS);
+  return d.toISOString().slice(0, 10);
+}
+
 async function fetchActuals() {
   const url = buildUrl('https://api.eia.gov/v2/petroleum/pri/gnd/data/', {
     api_key: API_KEY,
@@ -642,7 +653,7 @@ async function fetchActuals() {
     'facets[product][]': 'EPD2D',
     'facets[process][]': 'PTE',
     'facets[duoarea][]': ['NUS','R10','R20','R30','R40','R50','SCA'],
-    start: '2025-06-01',
+    start: historyStart(),
     'sort[0][column]': 'period',
     'sort[0][direction]': 'asc',
     length: '5000'
@@ -772,9 +783,29 @@ function initRangeSlider(mainChart, allLabels, actualData, forecastData) {
   const lblEnd = document.getElementById('rangeLabelEnd');
 
   const totalCount = allLabels.length;
+  const minWindowFrac = 8 / totalCount;
+
+  // Open centred on the current month rather than on the whole span, so the
+  // chart lands on now instead of on wherever the history happens to begin.
+  // The slider still reaches the full range; this only sets the initial view.
+  const VIEW_MONTHS = 12;
   let rangeStart = 0;
   let rangeEnd = 1;
-  const minWindowFrac = 8 / totalCount;
+  if (totalCount > 1) {
+    const now = new Date();
+    const nowKey = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
+    // Actuals can lag by a month, so fall back to the first label at or after
+    // this month, and to the final label if the whole series is in the past.
+    let idx = allLabels.indexOf(nowKey);
+    if (idx === -1) idx = allLabels.findIndex(l => l >= nowKey);
+    if (idx === -1) idx = totalCount - 1;
+
+    const span = Math.min(1, Math.max(minWindowFrac, VIEW_MONTHS / totalCount));
+    let s = (idx / (totalCount - 1)) - span / 2;
+    s = Math.max(0, Math.min(s, 1 - span));
+    rangeStart = s;
+    rangeEnd = s + span;
+  }
 
   function fmtLabel(idx) {
     const lbl = allLabels[Math.min(Math.max(Math.round(idx), 0), totalCount - 1)];
@@ -910,10 +941,17 @@ async function init() {
   forecastMonthly.sort((a,b) => a.period.localeCompare(b.period));
 
   const lastActualMonth = nationalMonthly[nationalMonthly.length - 1]?.period || '';
-  const futureForecasts = forecastMonthly.filter(f => f.period > lastActualMonth && f.period <= '2026-12');
-  const fc2026 = forecastMonthly.filter(f => f.period.startsWith('2026'));
-  const avg2026 = fc2026.length
-    ? (fc2026.reduce((s,d) => s + d.value, 0) / fc2026.length)
+  // No end cap. This used to stop at '2026-12', which silently truncated the
+  // outlook to the end of that calendar year no matter how far STEO published.
+  // The forecast now runs as far as EIA gives us.
+  const futureForecasts = forecastMonthly.filter(f => f.period > lastActualMonth);
+
+  // Forecast average for the current calendar year, derived rather than
+  // hard-wired to 2026 so the KPI keeps working next year.
+  const forecastYear = String(new Date().getFullYear());
+  const fcYear = forecastMonthly.filter(f => f.period.startsWith(forecastYear));
+  const avgYear = fcYear.length
+    ? (fcYear.reduce((s,d) => s + d.value, 0) / fcYear.length)
     : null;
 
   // — KPIs —
@@ -923,7 +961,8 @@ async function init() {
   document.getElementById('kpi-current-date').textContent = lastWeekly
     ? `Week of ${new Date(lastWeekly.period + 'T00:00:00').toLocaleDateString('en-US', {month:'short', day:'numeric', year:'numeric'})}`
     : '';
-  document.getElementById('kpi-forecast').textContent = avg2026 ? fmt(avg2026) : '—';
+  document.getElementById('kpi-forecast').textContent = avgYear ? fmt(avgYear) : '—';
+  document.getElementById('kpi-forecast-label').textContent = `${forecastYear} Forecast Avg`;
   document.getElementById('updated').textContent = new Date().toLocaleDateString('en-US', {month:'short', day:'numeric', year:'numeric'});
 
   // — Build combined labels & datasets —
@@ -1019,17 +1058,17 @@ async function init() {
           }
         },
         annotation: {
-          annotations: avg2026 ? {
+          annotations: avgYear ? {
             forecastAvgLine: {
               type: 'line',
-              yMin: avg2026,
-              yMax: avg2026,
+              yMin: avgYear,
+              yMax: avgYear,
               borderColor: 'rgba(236,119,0,0.3)',
               borderWidth: 1,
               borderDash: [4, 4],
               label: {
                 display: true,
-                content: `2026 Avg ${fmt(avg2026)}`,
+                content: `${forecastYear} Avg ${fmt(avgYear)}`,
                 position: 'start',
                 backgroundColor: 'rgba(236,119,0,0.1)',
                 color: '#ec7700',
